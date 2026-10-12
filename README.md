@@ -131,6 +131,8 @@ Adaptor certificates are not live spending permissions. The deployed escrow uses
 
 ## Checks
 
+The public-source audit tests require ripgrep (`rg`) on `PATH`; on Ubuntu, install it with `sudo apt-get install ripgrep`. GitHub Actions installs it explicitly. Application tests provide their own static-page fixtures and run before the production build.
+
 ```sh
 pnpm typecheck
 pnpm test:unit

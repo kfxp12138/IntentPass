@@ -10,6 +10,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Install public-audit dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends ripgrep
+          rg --version
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -18,5 +23,8 @@ jobs:
           version: '11.25.0'
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
-      - run: pnpm test:unit
+      - name: Test from an unbuilt checkout
+        run: |
+          test ! -d apps/web/dist
+          pnpm test:unit
       - run: pnpm build
