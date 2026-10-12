@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,realpathSync,rmSync,statSync,writeFileSync,chmodSync,symlinkSync,mkdirSync,existsSync,linkSync} from 'node:fs';
 import {join,resolve} from 'node:path';
+import {tmpdir} from 'node:os';
 import {spawn,spawnSync} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
@@ -18,7 +19,7 @@ function call():Day4PolicyProbeCall{
     block:{number:'100',hash:h(100),timestamp:'200'},data:encodeFunctionData({abi:escrowAbi,functionName:'orders',args:[orderId]}),value:'0',gas:'5000000'};
 }
 function fixture(t:test.TestContext){
-  const directory=mkdtempSync(join(realpathSync('/private/tmp'),'intentpass-policy-probe-test-')),path=join(directory,'capture.db'),stores:PolicyProbeAttemptStore[]=[];
+  const directory=mkdtempSync(join(realpathSync(tmpdir()),'intentpass-policy-probe-test-')),path=join(directory,'capture.db'),stores:PolicyProbeAttemptStore[]=[];
   t.after(()=>{for(const store of stores)store.close();rmSync(directory,{recursive:true,force:true});});
   const open=()=>{const store=new PolicyProbeAttemptStore(path);stores.push(store);return store;};return {directory,path,open};
 }
@@ -160,7 +161,8 @@ test('non-busy WAL errors are never retried and repeated busy cannot outlive the
 test('private configuration rejects repository paths aliases any symlink parent and unsafe DB or sidecars',t=>{
   const f=fixture(t),repo=resolve('.');
   for(const path of ['relative.db',join(f.directory,'not-json.txt'),join(repo,'probe-private.db'),join(repo,'../intentpass/probe-private.db'),join(f.directory,'absent','probe.db')])assert.throws(()=>new PolicyProbeAttemptStore(path),/CONFIGURATION_INVALID/);
-  for(const path of [f.directory+'/./capture.db',f.directory+'//capture.db',f.directory+'/../'+f.directory.split('/').at(-1)+'/capture.db','/tmp/'+f.directory.split('/').at(-1)+'/capture.db'])assert.throws(()=>new PolicyProbeAttemptStore(path),/CONFIGURATION_INVALID/);
+  const temporaryAlias=join(f.directory,'temporary-root-alias');symlinkSync(f.directory,temporaryAlias);
+  for(const path of [f.directory+'/./capture.db',f.directory+'//capture.db',f.directory+'/../'+f.directory.split('/').at(-1)+'/capture.db',join(temporaryAlias,'capture.db')])assert.throws(()=>new PolicyProbeAttemptStore(path),/CONFIGURATION_INVALID/);
   assert.equal(existsSync(join(repo,'probe-private.db')),false);
   const publicPath=join(f.directory,'public.db');writeFileSync(publicPath,'',{mode:0o644});assert.throws(()=>new PolicyProbeAttemptStore(publicPath),/CONFIGURATION_INVALID/);
   const link=join(f.directory,'linked.db');symlinkSync(publicPath,link);assert.throws(()=>new PolicyProbeAttemptStore(link),/CONFIGURATION_INVALID/);

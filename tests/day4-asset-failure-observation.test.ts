@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {mkdtempSync,writeFileSync,readFileSync,readdirSync,rmSync,realpathSync} from 'node:fs';
 import {join} from 'node:path';
+import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {encodeAbiParameters,encodeFunctionData,getContractAddress,keccak256,parseAbi,parseAbiParameters,toHex,type Address,type Hex} from 'viem';
 import {Day4AssetFailureProofSchema,type Day4AssetFailureProof} from '../packages/protocol/src/day4-asset-failure-types.js';
@@ -180,7 +181,7 @@ test('asset-failure live CLI has fixed bounded read-only transport and full tran
   assert.doesNotMatch(text,/createWalletClient|sendTransaction|signTransaction|stateOverride|process\.env\.RPC_URL/);
 });
 test('asset-failure CLI missing preflight performs no fetch or compilation and archives original report bytes',t=>{
-  const directory=mkdtempSync(join(realpathSync('/private/tmp'),'intentpass-asset-failure-cli-'));t.after(()=>rmSync(directory,{recursive:true,force:true}));
+  const directory=mkdtempSync(join(realpathSync(tmpdir()),'intentpass-asset-failure-cli-'));t.after(()=>rmSync(directory,{recursive:true,force:true}));
   writeFileSync(join(directory,'package.json'),'{}\n');
   const git=(args:string[])=>{const result=spawnSync('git',args,{cwd:directory,encoding:'utf8',timeout:10000});assert.equal(result.status,0,result.stderr);};
   git(['init','-q']);git(['add','package.json']);git(['-c','user.name=Synthetic Local Test','-c','user.email=synthetic@example.invalid','commit','-qm','local fixture']);
