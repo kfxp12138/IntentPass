@@ -20,6 +20,7 @@ export interface PurchasePort {catalog:()=>Promise<unknown>;propose:(input:unkno
 export interface PurchaseReviewAttempt {request:ReturnType<typeof ReviewRequestSchema.parse>;state:'PENDING'|'COMPLETE'|'FAILED'|'DISCARDED';startedAt:string;endedAt?:string;result?:ReturnType<typeof ReviewResultSchema.parse>;code?:string;}
 const eq=(a:string,b:string)=>a.toLowerCase()===b.toLowerCase();
 export class PurchaseFlow {
+  proposalResult:ReturnType<typeof ProposeResultSchema.parse>|undefined;
   draft:Draft|undefined;
   reviewResult:ReturnType<typeof ReviewResultSchema.parse>|undefined;
   authorization:Awaited<ReturnType<typeof prepareAuthorization>>|undefined;
@@ -37,7 +38,7 @@ export class PurchaseFlow {
   private reviewKey(draft:Draft){return JSON.stringify({policy:policyHash(draft.policy),buyer:draft.intent.buyer.toLowerCase(),quote:draft.quote,evidence:purchaseEvidenceHash(draft.evidence),chainId:draft.intent.chainId,arbiter:draft.intent.arbiter.toLowerCase(),bond:draft.intent.bond});}
   get canReview(){return !!this.draft&&!this.authorizationLocked&&!this.attempts.has(this.reviewKey(this.draft));}
   private editable(){if(this.signing)throw new Error('WALLET_SIGNATURE_PENDING');if(this.signedAuthorization)throw new Error('ORIGINAL_AUTHORIZATION_ALREADY_SIGNED');if(this.walletStarted)throw new Error('ORIGINAL_AUTHORIZATION_OUTCOME_UNKNOWN');}
-  reset(){this.revision++;this.draft=undefined;this.reviewResult=undefined;this.authorization=undefined;this.preflightSnapshot=undefined;}
+  reset(){this.revision++;this.proposalResult=undefined;this.draft=undefined;this.reviewResult=undefined;this.authorization=undefined;this.preflightSnapshot=undefined;}
   invalidateAuthorization(){this.revision++;this.authorization=undefined;this.preflightSnapshot=undefined;}
   private guard() {
     const snapshot=JSON.stringify(this.task()),generation=this.session.generation,revision=this.revision;
@@ -58,7 +59,7 @@ export class PurchaseFlow {
     if(!this.entries||refs.some(ref=>!this.entries!.some(entry=>eq(entry.quote.quoteId,ref))))throw new Error('CATALOG_REQUIRED');
     const taskText=task.evidence?.taskText??`生成数据集 ${task.policy.datasetHash} 的 count、sum、min、max 报告；用途为商业使用。`;
     const key=policyHash(task.policy)+taskText;if(this.taskSalt?.key!==key)this.taskSalt={key,salt:createEvidenceSalt()};const salt=task.evidence?.schemaVersion===2?task.evidence.salt:this.taskSalt.salt;
-    guard();const result=ProposeResultSchema.parse(await this.client.propose({policy:task.policy,taskText,buyer:task.taskInput.buyer,quoteRefs:refs,evidenceSalt:salt,...(task.evidence?.documents.length?{additionalEvidence:task.evidence.documents}:{})}));guard();
+    guard();const result=ProposeResultSchema.parse(await this.client.propose({policy:task.policy,taskText,buyer:task.taskInput.buyer,quoteRefs:refs,evidenceSalt:salt,...(task.evidence?.documents.length?{additionalEvidence:task.evidence.documents}:{})}));guard();this.proposalResult=result;
     if(result.status!=='DRAFT')return result;
     if(result.evidence.schemaVersion!==2||!eq(result.evidence.salt,salt))throw new Error('DRAFT_CONTEXT_INVALID');
     const e=result.intent,q=result.quote;

@@ -52,6 +52,14 @@ export function usd(cents:string|number|bigint){
 }
 export const salesObjective='Purchase a commercial-use daily sales summary: reported day count, total revenue, lowest daily revenue and highest daily revenue. Recompute these four metrics from the supplied USD-cent dataset. Dates and currency describe the buyer-supplied source; source authenticity is not certified. No forecast or business recommendation is requested.';
 const briefSchema=z.object({format:z.literal(salesBriefFormat),objective:z.literal(salesObjective),currency:z.literal('USD'),unit:z.literal('cents'),source:z.enum(['sample','uploaded']),sourceHash:z.string().regex(/^0x[0-9a-f]{64}$/),datasetHash:z.string().regex(/^0x[0-9a-f]{64}$/),csv:z.string().max(12000)}).strict();
+const intentBriefSchema=briefSchema.extend({format:z.literal('IntentPass.SalesIntent.v1'),objective:z.string().min(10).max(2000),dataset:z.array(z.number().int().refine(Number.isSafeInteger)).min(1).max(90),sourceMapping:z.literal('Each consecutive daily revenue_usd value is converted exactly to integer USD cents, in CSV row order. The report metrics describe these daily amounts.')}).strict();
+/** The user's words are retained exactly in the evidence commitment. */
+export function salesIntentText(intent:string,data:SalesData){
+  const verified=parseSalesCsv(data.csv,data.source),datasetHash=createReport(verified.dataset).datasetHash;
+  const text=JSON.stringify(intentBriefSchema.parse({format:'IntentPass.SalesIntent.v1',objective:intent,currency:'USD',unit:'cents',source:verified.source,sourceHash:verified.sourceHash,datasetHash,csv:verified.csv,dataset:verified.dataset,sourceMapping:'Each consecutive daily revenue_usd value is converted exactly to integer USD cents, in CSV row order. The report metrics describe these daily amounts.'}));
+  if(text.length>16000)fail('This intent and sales source are too large.');return text;
+}
+export function readSalesIntent(taskText:string){try{return intentBriefSchema.parse(JSON.parse(taskText)).objective;}catch{return undefined;}}
 /** Business context remains in the existing evidence commitment; signed schemas are unchanged. */
 export function salesTaskText(data:SalesData,datasetHash:string){
   const verified=parseSalesCsv(data.csv,data.source);
@@ -61,7 +69,8 @@ export function salesTaskText(data:SalesData,datasetHash:string){
   return text;
 }
 export function readSalesBrief(taskText:string,dataset:unknown):SalesData|undefined {
-  try{const brief=briefSchema.parse(JSON.parse(taskText)),data=parseSalesCsv(brief.csv,brief.source);
+  try{const brief=z.union([briefSchema,intentBriefSchema]).parse(JSON.parse(taskText)),data=parseSalesCsv(brief.csv,brief.source);
+    if('dataset'in brief&&JSON.stringify(brief.dataset)!==JSON.stringify(data.dataset))return undefined;
     if(data.sourceHash!==brief.sourceHash||createReport(dataset).datasetHash!==brief.datasetHash||createReport(data.dataset).datasetHash!==brief.datasetHash)return undefined;
     return data;
   }catch{return undefined;}

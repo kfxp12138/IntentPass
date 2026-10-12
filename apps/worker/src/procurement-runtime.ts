@@ -30,10 +30,13 @@ import type {BackgroundActorConfig} from '../../../packages/adapters/src/privy-b
 import type {BackgroundActivation} from './background-procurement.js';
 import {writePrivateServiceJsonOnce} from '../../../scripts/create-privy-service-wallets.js';
 import {CatalogResponseSchema} from '../../../packages/protocol/src/purchase-api.js';
+import {readSalesIntent} from '../../../packages/protocol/src/sales-brief.js';
+import {loadActivatedReviewPolicy} from '../../../packages/adapters/src/review-policy.js';
 
 export async function executeProcurement(scopeInput:unknown,memoryInput:unknown,configs:readonly [BackgroundActorConfig,BackgroundActorConfig],directory:string,activation:BackgroundActivation,environment:NodeJS.ProcessEnv=process.env,progress:(stage:string)=>void=()=>{},assertActive:()=>void=()=>{},catalogue?:unknown,attemptNamespace?:string){
   const scope=ExecutionScopeSchema.parse(scopeInput),plan={scope,scopeHash:executionScopeHash(scope)},memory=MemoryPayloadSchema.parse(memoryInput);
   if(!memory.taskInput)throw Error('BACKGROUND_TASK_REQUIRED');
+  if(readSalesIntent(memory.evidence.taskText)!==undefined&&(!environment.REVIEW_POLICY_PATH||!environment.JEV_MODEL||(loadActivatedReviewPolicy(environment.REVIEW_POLICY_PATH,environment.JEV_MODEL).questionVersion??1)!==1))throw Error('LIVE_INTENT_REVIEW_REQUIRED');
   let bundle:Awaited<ReturnType<typeof createBackgroundSessions>>|undefined,vault:BackgroundVault|undefined;
   try{
   const base=configuredBrowserApi(environment);if(!base||JSON.stringify(base.configuration.recoveryDeployment)!==JSON.stringify(plan.scope.deployment))throw Error('BACKGROUND_DEPLOYMENT_CHANGED');

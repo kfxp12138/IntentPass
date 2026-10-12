@@ -18,7 +18,10 @@
     "tools:foundry": "node --import tsx scripts/install-foundry.ts",
     "test:contract:monad": "node --import tsx scripts/test-monad-contract.ts",
     "test": "pnpm test:unit",
-    "check": "pnpm typecheck && pnpm test:unit && pnpm build"
+    "check": "pnpm typecheck && pnpm test:unit && pnpm build",
+    "tools:adaptor": "node --import tsx scripts/install-adaptor.ts",
+    "test:adaptor": "node --experimental-sqlite --import tsx --test --test-timeout=30000 tests/crypto/adaptor-review.test.ts",
+    "demo:adaptor": "node --experimental-sqlite --import tsx scripts/demo-adaptor-review.ts"
   },
   "dependencies": {
     "@openzeppelin/contracts": "5.4.0",

@@ -8,6 +8,8 @@ import {configuredWorkflowApi} from '../apps/web/src/workflow-api.js';
 import {AuthenticationRejected} from '../packages/adapters/src/privy-auth.js';
 import {GeneralAutomationProfileSchema,generalProfileHash} from '../packages/automation/src/general-profile.js';
 import {writePrivateServiceJsonOnce} from '../scripts/create-privy-service-wallets.js';
+import {buildLiveSalesTask,defaultSalesIntent} from '../apps/web/src/live-purchase-model.js';
+import {sampleSalesCsv} from '../packages/protocol/src/sales-brief.js';
 const address=`0x${'11'.repeat(20)}` as `0x${string}`;
 test('general task API authenticates owners, isolates jobs and output, and exposes no runtime credentials',async()=>{
   const directory=mkdtempSync(resolve(realpathSync(tmpdir()),'intentpass-workflow-api-')),browser={configuration:{privyAppId:'local-test',meraRpId:null,recoveryDeployment:null},auth:{authenticate:async(token:string)=>{if(!['first','second'].includes(token))throw new AuthenticationRejected();return {subject:token,wallets:[address]};}}};
@@ -31,5 +33,16 @@ test('general task API authenticates owners, isolates jobs and output, and expos
     writePrivateServiceJsonOnce(resolve(directory,'connection-consents/buyer.json'),{planId,profileHash,role:'buyer',confirmGeneralAuthority:true,localPlaintextProcessingApproved:true,subject:'first',address});
     const context=await(await call({action:'context'})).json();assert.equal(context.status,'CONFIGURED_CONTEXT');assert.equal(context.buyer,address);assert.equal(context.asset,profile.deployment.asset);assert.equal(context.configurationOnly,true);assert.ok(!/authorizationPrivateKey|walletId|signerId|subject/.test(JSON.stringify(context)));
     const denied=await(await call({action:'context'},'second')).json();assert.equal(denied.code,'WORKFLOW_BUYER_CONTEXT_UNAVAILABLE');
+    let readinessReads=0;api.readiness=async()=>{readinessReads++;return {readiness:'fixture'};};
+    assert.equal((await(await call({action:'readiness'},'second')).json()).status,'REJECT');assert.equal(readinessReads,0);
+    assert.deepEqual(await(await call({action:'readiness'})).json(),{readiness:'fixture'});assert.equal(readinessReads,1);
+    const memory=buildLiveSalesTask({intent:defaultSalesIntent,csv:sampleSalesCsv,source:'sample',budget:'10'},context);
+    const request={action:'submit',confirm:true,submission:{idempotencyKey:'transport-key',workflow:{name:'Live sales report purchase',version:'1',steps:[{id:'procurement',handler:'intentpass.procurement',effect:'WRITE'}]},input:memory,runAt:Date.now()+3600000}};
+    const purchase=await(await call(request)).json();assert.equal(typeof purchase.id,'string');
+    assert.equal((await(await call({...request,submission:{...request.submission,idempotencyKey:'different-key'}})).json()).id,purchase.id);
+    assert.equal((await(await call({action:'find',taskId:memory.policy.taskId})).json()).id,purchase.id);
+    assert.equal((await(await call({action:'find',taskId:memory.policy.taskId},'second')).json()).id,null);
+    const trace=await(await call({action:'trace',jobId:purchase.id})).json();assert.deepEqual(trace.task,memory);assert.deepEqual(trace.progress,{events:[],completion:null});
+    let traceReads=0;api.progress=()=>{traceReads++;return {};};assert.equal((await call({action:'trace',jobId:purchase.id},'second')).status,503);assert.equal(traceReads,0);
   }finally{await app.close();await api.close();rmSync(directory,{recursive:true,force:true});}
 });

@@ -19,7 +19,9 @@ import {LocalTaskContextSchema} from '../../../packages/protocol/src/local-sdk-r
 import {GeneralConnectionPlanSchema,GeneralConnectionConsentSchema} from '../../../packages/protocol/src/general-connection.js';
 import {address} from '../../../packages/protocol/src/schemas.js';
 import {WorkflowSubmitRequestSchema} from '../../../packages/protocol/src/workflow-api.js';
-export interface WorkflowApi {auth:BrowserApi['auth'];store:WorkflowStore;vault:EncryptedWorkflowVault;worker:WorkflowWorker;configuration:()=>GeneralRuntimeConfiguration|undefined;taskOwner?:()=>{subject:string;address:string}|undefined;recovery?:(jobId:string)=>unknown;close():Promise<void>;}
+import {readProcurementProgress} from '../../worker/src/procurement-progress.js';
+import {inspectLiveReadiness} from './live-readiness.js';
+export interface WorkflowApi {auth:BrowserApi['auth'];store:WorkflowStore;vault:EncryptedWorkflowVault;worker:WorkflowWorker;configuration:()=>GeneralRuntimeConfiguration|undefined;taskOwner?:()=>{subject:string;address:string}|undefined;recovery?:(jobId:string)=>unknown;progress?:(jobId:string)=>unknown;readiness?:()=>Promise<unknown>;close():Promise<void>;}
 export function configuredWorkflowApi(env:NodeJS.ProcessEnv,browser:BrowserApi|undefined):WorkflowApi|undefined{
   if(!env.AUTOMATION_DATA_DIRECTORY||!browser)return undefined;if(!isAbsolute(env.AUTOMATION_DATA_DIRECTORY))throw Error('GENERAL_DIRECTORY_INVALID');
   const directory=resolve(env.AUTOMATION_DATA_DIRECTORY);privateServiceDirectory(directory);
@@ -36,12 +38,22 @@ export function configuredWorkflowApi(env:NodeJS.ProcessEnv,browser:BrowserApi|u
     if(consent.role!=='buyer'||consent.planId!==plan.planId||consent.profileHash!==plan.profileHash||plan.profileHash!==generalProfileHash(c.profile)||consent.address.toLowerCase()!==c.profile.buyer.toLowerCase()||plan.roles[0].address.toLowerCase()!==c.profile.buyer.toLowerCase())throw Error('GENERAL_CONTEXT_OWNER_CHANGED');
     return {subject:consent.subject,address:consent.address};
   };
-  return {auth:browser.auth,store,vault,worker,configuration,taskOwner,recovery,close:async()=>{closed=true;clearInterval(timer);await running?.catch(()=>{});store.close();raw.dispose();}};
+  return {auth:browser.auth,store,vault,worker,configuration,taskOwner,recovery,progress:jobId=>readProcurementProgress(resolve(directory,'procurements',z.uuid().parse(jobId))),readiness:async()=>{const c=configuration();if(!c)throw Error('WORKFLOW_CONFIGURATION_REQUIRED');return inspectLiveReadiness(c,env);},close:async()=>{closed=true;clearInterval(timer);await running?.catch(()=>{});store.close();raw.dispose();}};
 }
 export function serveWorkflow(req:IncomingMessage,res:ServerResponse,api:WorkflowApi){return serveAuthenticatedJson(req,res,{auth:api.auth,failureCode:'WORKFLOW_SERVICE_UNAVAILABLE',invoke:async(input,principal)=>{
-  const request=z.object({action:z.enum(['list','submit','output','cancel','context']),jobId:z.string().optional(),submission:z.unknown().optional(),confirm:z.boolean().optional()}).strict().parse(input),owner=principal.subject;
-  if(request.action==='context'){
+  const request=z.object({action:z.enum(['list','submit','output','cancel','context','readiness','trace','find']),jobId:z.string().optional(),taskId:z.string().regex(/^0x[0-9a-fA-F]{64}$/).optional(),submission:z.unknown().optional(),confirm:z.boolean().optional()}).strict().parse(input),owner=principal.subject;
+  if(request.action==='find'){
+    if(!request.taskId)return {status:'REJECT',code:'TASK_ID_REQUIRED'};
+    for(const job of api.store.listOwned(owner,1000)){
+      if(!job.workflow.steps.some(s=>s.handler==='intentpass.procurement'))continue;
+      const input=await api.vault.open(job.inputRef),memory=MemoryPayloadSchema.safeParse((input as {memory?:unknown})?.memory??input);
+      if(memory.success&&memory.data.policy.taskId.toLowerCase()===request.taskId.toLowerCase())return {id:job.id,status:job.status};
+    }
+    return {id:null,status:'NOT_FOUND_OR_PENDING'};
+  }
+  if(request.action==='context'||request.action==='readiness'){
     const config=api.configuration(),originalOwner=api.taskOwner?.();if(!config?.profile.enabled||originalOwner?.subject!==owner||!principal.wallets.some(w=>w.toLowerCase()===config.profile.buyer.toLowerCase()))return {status:'REJECT',code:'WORKFLOW_BUYER_CONTEXT_UNAVAILABLE'};
+    if(request.action==='readiness')return api.readiness?await api.readiness():{status:'REJECT',code:'WORKFLOW_CONFIGURATION_REQUIRED'};
     const p=config.profile;return LocalTaskContextSchema.parse({status:'CONFIGURED_CONTEXT',chainId:p.deployment.chainId,buyer:p.buyer,seller:p.seller,asset:p.deployment.asset,arbiter:p.deployment.arbiter,configurationOnly:true});
   }
   if(request.action==='list')return {mode:'general',workerRunning:true,limits:{jobCount:null,amountPerOrder:api.configuration()?.profile.maxUnitsPerOrder??null,expiresAt:api.configuration()?.profile.expiresAt??null},financialConfigurationPresent:api.configuration()?.profile.enabled===true,jobs:api.store.listOwned(owner).map(j=>{const recovery=api.recovery?.(j.id);return {id:j.id,workflow:j.workflow.name,status:recovery?'SUCCEEDED':j.status,step:recovery?j.workflow.steps.length:j.cursor,stepCount:j.workflow.steps.length,cancelRequested:j.cancelRequested};})};
@@ -56,6 +68,12 @@ export function serveWorkflow(req:IncomingMessage,res:ServerResponse,api:Workflo
     catch(error){if(error instanceof Error&&error.message==='WORKFLOW_IDEMPOTENCY_CONFLICT')return {status:'REJECT',code:'WORKFLOW_IDEMPOTENCY_CONFLICT'};throw error;}
   }
   const job=api.store.owned(owner,z.string().min(1).max(128).parse(request.jobId));
+  if(request.action==='trace'){
+    if(!job.workflow.steps.some(s=>s.handler==='intentpass.procurement'))return {status:'REJECT',code:'PROCUREMENT_JOB_REQUIRED'};
+    const input=await api.vault.open(job.inputRef),wrapped=input as {memory?:unknown};
+    const memory=MemoryPayloadSchema.parse(wrapped?.memory??input),step=api.store.step(job.id,Math.min(job.cursor,job.workflow.steps.length-1));
+    return {id:job.id,status:job.status,task:memory,dispatched:step.dispatched,attempts:step.attempts,historicalCompletion:api.recovery?.(job.id)??null,progress:api.progress?.(job.id)??{events:[],completion:null}};
+  }
   if(request.action==='cancel'){if(request.confirm!==true)return {status:'REJECT',code:'WORKFLOW_CONFIRMATION_REQUIRED'};api.store.cancel(job.id,Date.now());return {id:job.id,status:api.store.get(job.id)!.status};}
   const outputs:Record<string,unknown>=Object.create(null);for(let i=0;i<job.cursor;i++){const step=api.store.step(job.id,i);if(step.resultRef)outputs[job.workflow.steps[i].id]=await api.vault.open(step.resultRef);}
   const recovery=api.recovery?.(job.id);if(recovery)outputs.procurement=recovery;return {id:job.id,status:recovery?'SUCCEEDED':job.status,outputs};

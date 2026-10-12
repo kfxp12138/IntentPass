@@ -18,6 +18,15 @@ contracts/out/
 contracts/cache/
 coverage/
 cache/
+# Publication contains the project and README, not submission collateral or work logs.
+docs/
+deliverables/
+.audio-work/
+.http-storage-test-*/
+*.mp4
+*.mov
+*.pptx
+*.srt
 # Keep the curated public evidence only; new local run output stays private.
 artifacts/*
 !artifacts/acceptance/

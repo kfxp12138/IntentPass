@@ -1,5 +1,6 @@
 export function icon(name:string){
   const paths:Record<string,string>={
+    demo:'<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/>',
     overview:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
     task:'<path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="5"/>',
     automation:'<path d="m13 2-9 12h7l-1 8 10-12h-7l1-8Z"/>',

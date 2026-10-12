@@ -1,20 +1,60 @@
 # IntentPass
 
-**Your agent buys. You set the terms.**
+<img src="assets/brand/intentpass-logo.svg" alt="IntentPass" width="88" />
 
-IntentPass enables AI agents to purchase data and reports, check usage-rights evidence, verify delivery, and settle payments onchain.
+**Agents purchase. JEV checks the intent.**
 
-![IntentPass proof explorer](docs/images/verified-purchase.jpg)
+IntentPass lets an AI agent buy a service from a natural-language request, with evidence review before spending and verified delivery before settlement on Monad.
 
-## The problem
+[Live application](https://intentpass.lol/#demo) · [Public purchase proof](https://intentpass.lol/#proof)
 
-An agent finding a service is not enough to complete a trustworthy purchase. The offer must match the user's request, its evidence must support the intended use, and the delivered result must meet the agreed terms before payment is released.
+## What it does
 
-IntentPass connects those checks in one workflow: **request → offer → evidence review → task-scoped authorization → delivery verification → settlement**.
+A store owner asks: “Buy a sales summary for my commercial business update. Report the number of days, total revenue, lowest daily revenue and highest daily revenue.”
 
-## Try the product
+Two offers can promise the same calculations while granting different usage rights. The planner selects a signed offer. JEV then evaluates three conditions against the user's original request and the offer's evidence:
 
-Use **Node.js 24** and **pnpm 11.25.0**. From this folder:
+1. The service matches the intent.
+2. The intended commercial use is permitted.
+3. The evidence belongs to the selected service.
+
+Contradictory evidence produces **REJECT**; insufficient support produces **ABSTAIN**. Both stop the purchase before its authorization and payment. **PASS** lets the workflow continue through its wallet, budget, deadline and chain checks.
+
+```text
+User intent + data + fee cap
+            |
+     Signed offer selection
+            |
+       JEV evidence review ---- REJECT / ABSTAIN -> stop
+            |
+           PASS
+            |
+   One-use order authorization
+            |
+     Monad escrow funding
+            |
+  Delivery + exact recomputation
+            |
+      2-of-3 acceptance
+            |
+  Settlement + verified withdrawal
+```
+
+The current service computes four exact sales statistics. It does not generate forecasts, certify the authenticity of imported sales data, or support arbitrary services without an appropriate delivery verifier.
+
+## Try the application
+
+Open [Live purchase](https://intentpass.lol/#demo). Use the sample sales data or upload a CSV with the header `date,revenue_usd`, then enter your intent and maximum purchase fee.
+
+For configured accounts, **Find signed offers** checks the available offers, wallet configuration and finalized balances. **Start this purchase** submits one task. The page shows the actual review response, execution events, report and withdrawal evidence. **Download receipt & report** becomes available after verified completion.
+
+Fresh execution requires an authenticated buyer, existing delegated wallet permissions, funded testnet accounts and valid provider offers. A new email login does not inherit the project's configured purchase authority or saved jobs. Missing configuration is reported as a blocker.
+
+No login is needed to inspect the historical example in [Proof explorer](https://intentpass.lol/#proof). It includes links to the original funding, delivery, acceptance, settlement and seller-withdrawal transactions.
+
+## Run locally
+
+Use **Node.js 24** and **pnpm 11.25.0**:
 
 ```sh
 pnpm install --frozen-lockfile
@@ -23,58 +63,71 @@ pnpm build
 pnpm start
 ```
 
-Open **http://127.0.0.1:3000/#overview**. No credentials are needed to explore the interface, import sales data, compute the preview, or view the recorded public transaction trail. Protected model, wallet, and procurement actions require your own configuration and stop when it is missing. Do not overwrite an existing configured `.env`.
+Open **http://127.0.0.1:3000/#overview**. Change `PORT` in your own `.env` if that port is occupied. Do not overwrite an existing configured `.env`. Use `pnpm dev` for development.
 
-1. Open **Buy a report** and use the sample store or import [the sample CSV](examples/sales/sample-sales.csv).
-2. Inspect the daily sales chart and the four exact report metrics.
-3. Try the incorrect-total example, then verify a matching report.
-4. Open **Proof explorer** to inspect the completed testnet purchase and its transaction links.
+The interface, unsigned sales preview and recorded proof work without provider credentials. Protected model, wallet and purchase actions stop when their configuration is missing. `/health` may report liveness OK and `ready: false`; liveness alone does not establish purchase readiness.
 
-The preview is an unsigned local calculation. It does not create a purchase or call a model. See [configuration](docs/configuration.md) for live integration requirements.
+### Live configuration
 
-## A real testnet purchase
+The public repository contains no functioning credentials, private workflow databases, owner delegations or active quote catalog. Configure your own accounts and deployment together:
 
-A store owner purchases a commercial-use report covering 14 days of synthetic sales. The report contains a day count, total revenue, minimum daily revenue, and maximum daily revenue. IntentPass recomputes these metrics from the committed dataset before acceptance.
+| Component | Configuration |
+| --- | --- |
+| Planner | `PLANNER_API_URL` including `/chat/completions`, `PLANNER_API_KEY`, `PLANNER_MODEL` |
+| JEV | `TYPESAFE_API_KEY`, a pinned `JEV_MODEL`, activated `REVIEW_POLICY_PATH`, persistent `REVIEW_JOURNAL_DB_PATH` |
+| Privy | Application credentials, authenticated wallet owners and explicitly installed delegated role policies |
+| Monad | Verified chain/RPC, ERC20, escrow, gate, reviewer and committee addresses |
+| Provider offers | Valid, signed offers through `QUOTE_CATALOG_PATH` |
+| Worker | Private `AUTOMATION_DATA_DIRECTORY`, persistent operation journals and authorized role material |
 
-| Result | Verified value |
+The live purchase route requires an activated policy that evaluates the full written intent. Bundled policy and calibration files are fixed test resources; their presence does not authorize activating an older policy for a new intent. The code verifies policy/report bindings.
+
+Keep a single active worker for a given set of wallet and operation journals. Preserve the current private state when moving a runtime; do not start a second executor from a stale database copy. Unknown transaction outcomes must be reconciled against their original operation before any new action.
+
+## Verified testnet execution
+
+The public sales example uses 14 days of synthetic store revenue. Its four figures are recomputed from the committed dataset.
+
+| Result | Value |
 | --- | --- |
 | Sales period | September 1–14, 2026 |
 | Total revenue | $16,673.25 |
-| Acceptance | 2 of 3 committee members |
-| Seller received | 0.000010 IPTEST (10 smallest units) |
-| Final order state | ALLOCATED_PAID; outstanding seller credit 0 |
+| Lowest / highest daily revenue | $788.25 / $1,945.50 |
+| Seller payment | 0.000010 IPTEST, or 10 smallest units |
+| Acceptance | 2 of 3 configured committee members |
+| Final state | `ALLOCATED_PAID`; remaining seller credit 0 |
 | Network | Monad Testnet, chain 10143 |
 
-[View the seller payout](https://testnet.monadexplorer.com/tx/0xe24abcca24dc5e2108d5f8c032feddbcda8ed70dc59784946ba28b22dd9ddc88) · [Read the final chain evidence](artifacts/acceptance/sales-report-purchase/verified-purchase.json) · [Understand the verification scope](docs/verification.md)
+The [October 9 public proof](artifacts/acceptance/sales-report-purchase/verified-purchase.json) preserves the original verified observation. That purchase required supplementary source-mapping evidence after an abstention and reconciliation of an interrupted settlement response.
 
-This is a real testnet settlement using synthetic business data. Completion required supplementary source-mapping evidence after the first review abstained, followed by reconciliation of an interrupted settlement response. The original review threshold and financial constraints stayed unchanged. This case does not establish uninterrupted unattended execution, source authenticity, or production security.
+A later server-run purchase also reached verified delivery and seller payment: [October 13 withdrawal transaction](https://testnet.monadvision.com/tx/0x8d71fa48b079e0875cdf251df2398a5c53c697954aac39b4a7012e16b8dd5de2). A separate recorded request returned ABSTAIN and stopped before payment. These are individual testnet observations, not a guarantee that a fresh request will pass.
 
-## Architecture
+## Architecture and cryptographic binding
 
-- **Web workspace:** English interface for sales briefs, evidence review, activity, orders, and proof inspection.
-- **Planner and JEV:** a configured OpenAI-compatible planner proposes offers; JEV assesses service, intended-use, and provenance evidence.
-- **Privy:** authentication and existing delegated wallet roles; authority remains bound to the user and purchase context.
-- **Durable worker:** encrypted local records, persistent queue, original-operation reconciliation, and duplicate-send protection.
-- **Monad contracts:** PACT-inspired escrow with task-bound authorization, 2-of-3 acceptance, allocation, and separately verified withdrawal.
-- **TypeScript SDK:** authenticated procurement interfaces and an independent public-chain reader.
+- **Planner and JEV:** proposal selection is separate from evidence review. A model judgment alone is not spending authority.
+- **Protocol:** hash commitments and EIP-712 signatures bind offers, task/evidence context, review receipts and one-use authorizations. Review receipts are application-issued attestations, not signatures issued by the JEV provider.
+- **Privy execution:** authenticated, delegated roles constrain wallet methods. The planner has no arbitrary-calldata signing interface.
+- **Persistent worker:** encrypted server-side task records, immutable operation reservations, duplicate-send protection and reconciliation of unknown outcomes.
+- **Monad contracts:** a PACT-inspired `ContextVoteEscrow`, fixed asset checks, 2-of-3 acceptance, allocation and separately verified withdrawal. A transaction hash or allocated credit alone is not proof of receipt.
+- **TypeScript SDK:** authenticated workflow APIs and an independent public-chain reader. See [client examples](examples/client/README.md) and [chain reader](examples/chain-client/README.md).
 
-[Architecture and code map](docs/architecture.md) · [SDK examples](examples/client/README.md) · [Security and scope](docs/security.md)
+Signatures make changes to the bound context detectable; they do not prove that JEV's semantic judgment is correct. Delivery verification establishes the four computed figures against the supplied input, not the real-world truth of that input. The configured committee is not claimed to be an independently operated decentralized oracle.
 
-## Repository map
+### Experimental adaptor signatures
 
-```text
-apps/web/          Product interface and authenticated HTTP APIs
-apps/worker/       Persistent workflow and settlement execution
-packages/          Protocol, adapters, storage, and automation modules
-contracts/         Solidity contracts and native contract tests
-examples/          Independent SDK and public-chain clients
-tests/             Application and regression tests
-fixtures/          Fixed synthetic test inputs
-scripts/           Build, verification, and operator utilities
-docs/              Reviewer guides and one product screenshot
-artifacts/         Curated public proofs and fixed policy test resources
-third-party/       Third-party license notices
+Open **Developer tools** and expand **Historical adaptor signature experiment (recording)** to compare PASS and REJECT and try the tamper controls. This separate experiment uses real recorded ECDSA adaptor cryptography with **simulated JEV answers**. Browser checks inspect record bindings; native tests verify the adaptor operations.
+
+With CMake, a C compiler and tar available on macOS or Linux:
+
+```sh
+pnpm tools:adaptor
+pnpm test:adaptor
+pnpm demo:adaptor
 ```
+
+The installer fetches SHA-256-pinned upstream source and public DLC vectors into `.tools/` and builds locally. The prototype binds a pre-signature to a candidate, completes it on PASS with a separate signed result binding, and rejects altered order/result contexts. Its transcripts use experiment keys; a completed transcript intentionally permits witness extraction.
+
+Adaptor certificates are not live spending permissions. The deployed escrow uses the existing EIP-712 authorization path. No BBS signature implementation, Full PACT implementation, or IMAS/CDAS security claim is made.
 
 ## Checks
 
@@ -84,7 +137,7 @@ pnpm test:unit
 pnpm build
 ```
 
-Native contract checks use the pinned Foundry toolchain:
+Native contract and ABI checks:
 
 ```sh
 pnpm tools:foundry
@@ -92,18 +145,36 @@ pnpm test:contract:monad
 pnpm abi:check
 ```
 
-The default application suite includes one opt-in real-compiler integration test. To include it after installing Foundry and compiling the contracts:
+The application suite has an opt-in real-compiler integration test. After installing Foundry and compiling the contracts, enable it with:
 
 ```sh
 FOUNDRY_OFFLINE=true INTENTPASS_RUNTIME_ARTIFACT_INTEGRATION=1 pnpm test:unit
 ```
 
-See [verification](docs/verification.md) for the checks actually run against this review snapshot. Unit tests, native contract tests, and historical public-chain evidence establish different things.
+Native adaptor checks run separately through `pnpm test:adaptor`; missing native tools fail that command explicitly. Application tests, native contract tests and historical chain records establish different properties. They do not constitute a production security audit.
 
-## Scope and license
+## Repository map
 
-This is a local testnet prototype. The active product uses IPTEST ERC20 settlement and server-side encrypted workflow storage. Cleanverse and Mera are outside the active product; compatibility modules and regression tests remain in the source. The Mera SDK is a development-only dependency. The escrow is **PACT-inspired**, not Full PACT or IMAS/CDAS.
+```text
+apps/web/       Interface and authenticated HTTP APIs
+apps/worker/    Persistent procurement and reconciliation
+packages/      Protocol, adapters, storage, automation and SDK
+contracts/     Solidity contracts and contract tests
+examples/      SDK clients, chain reader and sample sales CSV
+tests/         Application, regression and native crypto tests
+fixtures/      Fixed synthetic test inputs
+scripts/       Build, test and operator utilities
+assets/        Existing website brand mark
+artifacts/     Curated public proof and fixed policy test resources
+third-party/   Dependency licenses and notices
+```
 
-The independent SDK's next real authenticated procurement and additional policy-denial/refund/compensation evidence remain incomplete. Public hosting and hackathon submission are outside this snapshot. No production audit or complete hackathon acceptance is claimed.
+## Scope, privacy and license
 
-Original code is [MIT licensed](LICENSE). See [attribution](docs/attribution.md) for dependency notices and AI assistance disclosure.
+This is a deployed testnet prototype. The active product uses IPTEST ERC20 settlement and encrypted server-side workflow storage. Cleanverse and Mera are outside the active product; legacy compatibility code and regression tests remain. The Mera package is development-only.
+
+The server can decrypt its workflow vault. Configured model providers receive the task and review evidence. Unsigned task exports contain plaintext. Keep `.env`, role material, database files, keys and runtime backups private. An API key or read-only session does not grant wallet-owner authority.
+
+The independent SDK's next real authenticated procurement and additional policy-denial/refund/compensation acceptance remain incomplete. No complete hackathon acceptance or production audit is claimed.
+
+Original code is [MIT licensed](LICENSE). Third-party terms are preserved under `third-party/`; the adaptor dependency is described in [its notice](third-party/adaptor-signatures-NOTICE.md). Codex assisted with implementation, testing, documentation and interface development. The logo here is the existing website's SVG mark. Interface references included the AEGIS and Airlock hackathon presentations; their branding, code and wallet integrations were not copied.

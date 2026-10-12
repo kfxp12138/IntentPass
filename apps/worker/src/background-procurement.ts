@@ -7,6 +7,7 @@ import type {CompleteOrderAutomation} from '../../web/src/order-automation.js';
 import {checkWithdrawalReceipt} from '../../../packages/protocol/src/withdrawal.js';
 import {WithdrawalReconcileResponseSchema,checkWithdrawalRecord} from '../../../packages/protocol/src/withdrawal-api.js';
 import {createHash} from 'node:crypto';
+import {reportDelivery} from '../../../packages/protocol/src/fulfillment.js';
 
 export interface BackgroundActivation {scopeHash:string;localPlaintextProcessingApproved:boolean;walletDelegationApproved:boolean;}
 export interface BackgroundPorts {
@@ -36,12 +37,14 @@ export class BackgroundProcurement {
     this.vault.reserve(this.binding);this.started=true;
     const active=()=>{externalActive();if(this.clock()>=BigInt(this.scope.expiresAt))throw Error('BACKGROUND_SCOPE_EXPIRED');};
     let sequence=0;
+    const evidence=(name:string,value:unknown)=>this.vault.save('checkpoint',createHash('sha256').update(`${this.binding}:trace:${name}`).digest('hex'),this.binding,value);
     const checkpoint=(stage:string,verifiedComplete=false)=>{if(!/^[A-Z_]{1,64}$/.test(stage))throw Error('BACKGROUND_PROGRESS_INVALID');if(stage==='COMPLETE'&&!verifiedComplete)stage='PAYOUT_RETURNED';const id=createHash('sha256').update(`${this.binding}:${sequence++}`).digest('hex');this.vault.save('checkpoint',id,this.binding,{stage,at:String(this.clock()),...(stage==='REVIEW'&&this.ports.flow.draft?{candidate:this.ports.flow.draft}:{})});progress(stage);};
     try{
       checkpoint('BACKUP_TASK');this.vault.save('memory',this.scope.taskId.slice(2).toLowerCase(),this.binding,memory);
       // Intentionally no device hook: this is a different backend backup mode.
       const preparation=new AutomaticPreparation(this.ports.flow,this.clock);
       const prepared=await preparation.run(this.scope.quoteId?[this.scope.quoteId]:[],String(this.scope.mode==='general-job'?this.scope.profile.grantSeconds:300),checkpoint,false);active();
+      evidence('preparation',{result:prepared,proposal:this.ports.flow.proposalResult??null,candidate:this.ports.flow.draft??null,review:this.ports.flow.reviewResult??null,preflight:this.ports.flow.preflightSnapshot??null});
       if(prepared!=='READY'){this.vault.save('checkpoint',createHash('sha256').update(`${this.binding}:original-preparation-stop`).digest('hex'),this.binding,{stage:'ORIGINAL_PREPARATION_STOP',reason:prepared,candidate:this.ports.flow.draft??null,review:this.ports.flow.reviewResult??null});checkpoint('STOPPED_'+prepared);return {status:'ATTENTION' as const,reason:prepared};}
       if(!this.ports.flow.authorization)throw Error('BACKGROUND_AUTHORIZATION_REQUIRED');
       assertBackgroundUnsignedAuthorization(this.scope,this.ports.flow.authorization.payload,this.clock());
@@ -55,6 +58,7 @@ export class BackgroundProcurement {
       checkpoint('BACKUP_AUTHORIZATION');this.vault.save('authorization',payload.intent.orderId.slice(2).toLowerCase(),this.binding,{payload,dataset:memory.taskInput!.dataset});
       let backupReady=true;const payment=this.ports.payment(payload,()=>backupReady);
       const funded=await payment.run(true,active,checkpoint);active();
+      evidence('funding',funded);
       if(funded.status!=='CONFIRMED'){backupReady=false;checkpoint('STOPPED_'+funded.status);return {status:'ATTENTION' as const,reason:funded.status};}
       const completion=await this.ports.fulfillment(payload,memory.taskInput!.dataset).run(true,active,checkpoint);active();
       const original=WithdrawalReconcileResponseSchema.parse((completion.payout as {result:unknown}).result);
@@ -62,7 +66,10 @@ export class BackgroundProcurement {
       const request={payload,beneficiary:this.scope.payee};checkWithdrawalRecord(request,original.record);
       const receipt=checkWithdrawalReceipt({...request,hash:original.receipt.hash},original.receipt);
       if(receipt.status!=='CONFIRMED'||receipt.order.state!=='ALLOCATED_PAID'||receipt.transferredAmount!==payload.intent.price)throw Error('BACKGROUND_PAYOUT_UNPROVEN');
+      const delivered=reportDelivery(payload,memory.taskInput!.dataset);
+      if(delivered.evidenceHash.toLowerCase()!==receipt.order.evidenceHash.toLowerCase())throw Error('BACKGROUND_DELIVERY_UNPROVEN');
+      evidence('completion',{...delivered,receipt});
       checkpoint('COMPLETE',true);return {status:'CONFIRMED' as const,orderId:payload.intent.orderId,payoutHash:receipt.hash};
-    }catch(error){try{checkpoint('ATTENTION');}catch{/* Preserve the original immutable lease even if backup storage fails. */}throw error;}
+    }catch(error){try{evidence('failure',{code:error instanceof Error&&/^[A-Z][A-Z0-9_]{0,100}$/.test(error.message)?error.message:'PROCUREMENT_OUTCOME_UNCONFIRMED'});checkpoint('ATTENTION');}catch{/* Preserve the original immutable lease even if backup storage fails. */}throw error;}
   }
 }

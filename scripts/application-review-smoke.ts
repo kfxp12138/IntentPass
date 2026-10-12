@@ -10,11 +10,11 @@ import type {ReceiptSigner} from '../apps/web/src/services/review.js';
 const hash=()=>`0x${randomBytes(32).toString('hex')}` as Hex;
 const address=()=>`0x${randomBytes(20).toString('hex')}` as Address;
 /** New public application smoke inputs, separate from both frozen evaluation cohorts. */
-export async function applicationReviewSmokeCases(now:bigint){
+export async function applicationReviewSmokeCases(now:bigint,brief?:{datasetHash:Hex;taskText:string}){
   const seller=privateKeyToAccount(generatePrivateKey()),reviewer=privateKeyToAccount(generatePrivateKey());
   const deployment={chainId:'10143',arbiter:address(),asset:address(),gate:address(),reviewer:reviewer.address,committeeHash:hash()};
   const domain={chainId:deployment.chainId,arbiter:deployment.arbiter};
-  const buyer=address(),dataset=hash(),task=hash();
+  const buyer=address(),dataset=brief?.datasetHash??hash(),task=hash();
   const policy={schemaVersion:1,taskId:task,datasetHash:dataset,action:'dataset-report',metrics:['count','sum','min','max'],purpose:'commercial',budget:'10',allowedAsset:deployment.asset,requiredFacts:['service-matches-task','commercial-use-permitted','evidence-belongs-to-service'],version:'1'};
   const specifications=[
     {id:'application-complete',expected:'PASS' as const,rights:'The license for this exact report explicitly permits the buyer to use the report commercially, including commercial redistribution.'},
@@ -26,7 +26,7 @@ export async function applicationReviewSmokeCases(now:bigint){
     const quoteId=hash(),serviceTerms=`Seller ${seller.address} offers the current dataset-report under quote ${quoteId}. This report computes count, sum, min and max for the exact dataset ${dataset}. ${spec.rights}`;
     const unsigned={schemaVersion:1,quoteId,service:'dataset-report',seller:seller.address,payee:seller.address,asset:deployment.asset,amount:'10',serviceTerms,serviceTermsHash:termsHash(serviceTerms),expiresAt:String(now+3600n)};
     const quote={...unsigned,signature:await seller.signTypedData(quoteTypedData(unsigned,domain))};
-    const evidence={schemaVersion:2,salt:hash(),taskText:`Buy a count, sum, min and max report for the exact dataset ${dataset}. The report license must explicitly permit commercial use. The budget is 10 units of the designated asset.`,documents:[{id:'current-quote-terms',subjectQuoteId:quoteId,text:serviceTerms}]};
+    const evidence={schemaVersion:2,salt:hash(),taskText:brief?.taskText??`Buy a count, sum, min and max report for the exact dataset ${dataset}. The report license must explicitly permit commercial use. The budget is 10 units of the designated asset.`,documents:[{id:'current-quote-terms',subjectQuoteId:quoteId,text:serviceTerms}]};
     const input=ReviewRequestSchema.parse({policy,quote,evidence,intent:{schemaVersion:1,chainId:deployment.chainId,arbiter:deployment.arbiter,asset:deployment.asset,reviewer:deployment.reviewer,committeeHash:deployment.committeeHash,orderId:hash(),taskId:task,attempt:'1',buyer,seller:seller.address,payee:seller.address,price:'10',bond:'0',datasetHash:dataset,serviceTermsHash:quote.serviceTermsHash,purchaseEvidenceCommitment:purchaseEvidenceHash(evidence),policyHash:policyHash(policy),threshold:2,deliverySchemaHash:DELIVERY_SCHEMA,deliveryDeadline:String(now+3600n),settlementDeadline:String(now+7200n),allocationPolicyHash:ALLOCATION_POLICY,intentReleasePolicyHash:RELEASE_POLICY,pactPaymentPublicKeyHash:ZERO_HASH}});
     cases.push({id:spec.id,expected:spec.expected,input});
   }

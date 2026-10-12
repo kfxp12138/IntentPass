@@ -17,8 +17,25 @@ import {withdrawalAnchor} from '../packages/protocol/src/withdrawal-api.js';
 import {createBackgroundActor} from '../packages/adapters/src/privy-background-actor.js';
 import {generateKeyPairSync} from 'node:crypto';
 import type {PrivyClient} from '@privy-io/node';
+import {cpSync} from 'node:fs';
+import {readProcurementProgress} from '../apps/worker/src/procurement-progress.js';
+import {writePrivateServiceJsonOnce} from '../scripts/create-privy-service-wallets.js';
+import {renderLiveTrace} from '../apps/web/src/live-purchase-ui.js';
 
 const hash='a'.repeat(64),id='b'.repeat(64);
+test('live projection exposes actual review and verified report/payout; failed or unresolved execution never becomes success',async()=>{
+  for(const variant of ['PASS','REJECT','UNKNOWN'] as const){const f=await fixture(),job=directory();try{
+    if(variant==='REJECT')f.setChoice('CONTRADICTED');if(variant==='UNKNOWN')f.unknownPayment();
+    const result=await f.run.run(f.memory,f.activation,f.progress);
+    cpSync(f.root,resolve(job,'vault'),{recursive:true});chmodSync(resolve(job,'vault'),0o700);writePrivateServiceJsonOnce(resolve(job,'job-reference.json'),{scopeHash:f.activation.scopeHash,sellerSubject:'fixture'});
+    const progress=readProcurementProgress(job),view=renderLiveTrace({id:'d25b0906-9d26-4cb7-995f-f4d48d3ecbc9',status:variant==='PASS'?'SUCCEEDED':variant==='REJECT'?'FAILED':'RECONCILING',task:f.memory,dispatched:true,attempts:1,progress});
+    assert.equal(view.complete,variant==='PASS');assert.equal(!!progress.completion,variant==='PASS');assert.ok(progress.events.length>0);
+    assert.ok(!JSON.stringify(progress).includes('ownerSignature'));assert.ok(!JSON.stringify(progress).includes('authorizationPrivateKey'));
+    if(variant==='PASS'){assert.equal(result.status,'CONFIRMED');assert.match(view.html,/Your report is ready/);assert.match(view.html,/Verified withdrawal/);}
+    if(variant==='REJECT'){assert.equal(f.countsBackground().payments,0);assert.equal(f.counts().signatures,0);assert.equal(progress.review?.decision,'REJECT');}
+    if(variant==='UNKNOWN'){assert.equal(progress.completion,null);assert.deepEqual(progress.funding,{status:'ATTENTION',error:'SUBMISSION_OUTCOME_UNKNOWN',record:{status:'UNKNOWN',hash:null}});assert.match(view.html,/Escrow payment: UNKNOWN/);assert.match(view.html,/Do not submit another payment/);assert.equal(view.terminal,false);assert.doesNotMatch(view.html,/Your report is ready/);}
+  }finally{f.cleanup();rmSync(job,{recursive:true,force:true});}}
+});
 function directory(){return mkdtempSync(resolve(realpathSync(tmpdir()),'intentpass-background-'));}
 test('backend AES-GCM backup survives restart without WebAuthn, binds namespaces and keeps cleartext out of private files',()=>{
   const root=directory();let vault:BackgroundVault|undefined,restarted:BackgroundVault|undefined;
@@ -45,7 +62,7 @@ async function fixture(){
   const f=await purchaseEvidenceFixture({background:true});f.setChoice('SUPPORTED');
   const scope=BackgroundScopeSchema.parse({version:1,mode:'single-report-background',chainId:'10143',deployment:f.deployment,taskId:f.task().policy.taskId,datasetHash:f.task().policy.datasetHash,quoteId:f.entry.quote.quoteId,buyer:f.buyer.address,seller:f.seller.address,payee:f.seller.address,maxTotalUnits:'10',maxOrders:1,expiresAt:'5000',backup:'server-local-aes256gcm'}),memory={schemaVersion:1,kind:'memory',...f.task()};
   const root=directory(),vault=new BackgroundVault(root),stages:string[]=[];let ready=0,payments=0,fulfillments=0,badProof=false,paymentStatus:'CONFIRMED'|'ATTENTION'='CONFIRMED';
-  const ports:BackgroundPorts={flow:f.flow,assertDelegationReady:async()=>{ready++;},payment:(_p,backup)=>({run:async()=>{assert.equal(backup(),true);payments++;return {status:paymentStatus};}} as unknown as AutomaticPayment),fulfillment:(input,dataset)=>({run:async(_confirmed:boolean,_active:()=>void,progress:(stage:string)=>void)=>{
+  const ports:BackgroundPorts={flow:f.flow,assertDelegationReady:async()=>{ready++;},payment:(_p,backup)=>({run:async()=>{assert.equal(backup(),true);payments++;return paymentStatus==='ATTENTION'?{status:paymentStatus,funding:{record:{status:'UNKNOWN',hash:null},error:'SUBMISSION_OUTCOME_UNKNOWN'}}:{status:paymentStatus};}} as unknown as AutomaticPayment),fulfillment:(input,dataset)=>({run:async(_confirmed:boolean,_active:()=>void,progress:(stage:string)=>void)=>{
     fulfillments++;progress('COMPLETE');if(badProof)return {status:'CONFIRMED',payout:{hash:readTestHash(44)}};
     const p=AuthorizationPayloadSchema.parse(input),r=reportDelivery(p,[...dataset]),hash=readTestHash(44),block={number:'100',hash:readTestHash(11)},e=p.intent;
     const order={...f.snapshot('ALLOCATED_PAID'),orderId:e.orderId,contextHash:p.grant.contextHash,datasetHash:e.datasetHash,serviceTermsHash:e.serviceTermsHash,evidenceHash:r.evidenceHash,deliveryDeadline:e.deliveryDeadline,settlementDeadline:e.settlementDeadline,price:e.price,bond:e.bond,credits:{buyer:'0',payee:'0'},withdrawn:{buyer:'0',payee:e.price},accounting:{locked:'0',outstanding:'0',balance:'0'}};
