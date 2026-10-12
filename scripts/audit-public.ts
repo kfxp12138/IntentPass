@@ -1,0 +1,4 @@
+import {mkdirSync,writeFileSync,existsSync,copyFileSync} from 'node:fs';
+import {auditPublicTree} from './public-audit.js';
+const startedAt=new Date().toISOString(),base='artifacts/acceptance',path=`${base}/public-audit.json`;mkdirSync(base,{recursive:true});if(existsSync(path)){const history=`${base}/history/${startedAt.replaceAll(':','-')}-public-audit`;mkdirSync(history,{recursive:true});copyFileSync(path,`${history}/public-audit.json`);}
+try{const audit=auditPublicTree(process.cwd());const report={startedAt,...audit,endedAt:new Date().toISOString()};writeFileSync(path,JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({status:report.status,scanned:report.manifest.length,findings:report.findings,unverified:report.unverified,scope:report.scope}));process.exitCode=report.status==='PASS'?0:1;}catch{console.error('PUBLIC_AUDIT_UNAVAILABLE');process.exitCode=1;}

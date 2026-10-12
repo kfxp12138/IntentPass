@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IntentPass · Monad 测试网部署</title><link rel="stylesheet" href="./style.css"></head>
+<body><main><p class="eyebrow">INTENTPASS / MONAD TESTNET</p><h1 id="deployment-title">用 MetaMask 部署测试网合约</h1><p>用 Chrome 中已有的钱包支付测试网手续费，私钥保留在钱包里。</p>
+<section><h2>1. 核对部署准备</h2><p id="status" role="status">正在读取准备状态…</p><dl id="plan"></dl><p class="note">当前使用普通 ERC20 测试资产和固定资产检查。合约创建成功后，仍需用原交易核对实际入金、资金分配和领取。</p></section>
+<section><h2>2. 连接钱包</h2><button id="connect">连接 MetaMask 并读取余额</button><p id="wallet" role="status">请在 Chrome 中打开此页面。</p><button id="check" disabled>核对当前部署与手续费</button><p id="fees"></p></section>
+<section><h2>3. 钱包确认</h2><label><input id="confirm" type="checkbox" disabled> 我已核对上方账户、网络、固定合约参数和最高手续费，继续打开 MetaMask 确认。</label><button id="send" disabled>打开 MetaMask 确认部署</button><p id="result" role="status">没有请求签名或发送交易。</p></section>
+<section><h2>核对原部署</h2><p>发送后刷新或断连时，先从 MetaMask 活动中查找原交易。下方只核对原交易，不会再次发送。</p><label>原交易哈希<input id="hash" type="text" spellcheck="false" placeholder="0x…"></label><button id="recover" disabled>保存原交易哈希</button><button id="reconcile" disabled>只读核对原交易</button><p id="proof" role="status"></p></section>
+</main><script type="module" src="./client.ts"></script></body></html>

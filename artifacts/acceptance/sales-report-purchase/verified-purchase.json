@@ -1,0 +1,291 @@
+{
+  "version": 1,
+  "scope": "SYNTHETIC_SALES_REPORT_REAL_TESTNET_PURCHASE",
+  "verifiedAt": "2026-10-09T06:37:23.174Z",
+  "jobId": "2a2dc5f8-7fb2-41ea-ae44-73a664e5c71e",
+  "taskId": "0x575b3a7c33d74913290c233808646af25032b2fd023f34f09c518f4013f4911e",
+  "dataset": [
+    84250,
+    91500,
+    78825,
+    102475,
+    145000,
+    168050,
+    93225,
+    87500,
+    96050,
+    110225,
+    124800,
+    182075,
+    194550,
+    108800
+  ],
+  "report": {
+    "schemaVersion": 1,
+    "datasetHash": "0xf8bd28cdd94d312084c32fc162b8f9cfa452629caac65ae16c373cdec2ac387f",
+    "count": "14",
+    "sum": "1667325",
+    "min": "78825",
+    "max": "194550"
+  },
+  "sales": {
+    "source": "sample",
+    "currency": "USD",
+    "unit": "cents",
+    "sourceHash": "0xa58204f9601e506197434ad29fb97b4c0dd94f3952e7078032483787c9705975",
+    "from": "2026-09-01",
+    "to": "2026-09-14"
+  },
+  "budgetMinimalUnits": "10",
+  "paidMinimalUnits": "10",
+  "assetSymbol": "IPTEST",
+  "assetDecimals": 6,
+  "sellerBalanceMinimalUnits": "20",
+  "newUserOtp": 0,
+  "newTouchId": 0,
+  "originalFailedHistoryRetained": true,
+  "originalBudgetAndDeadlinesPreserved": true,
+  "review": {
+    "evaluation": {
+      "decision": "PASS",
+      "source": "JEV",
+      "modelId": "jev-1.13.0",
+      "questionConfigHash": "0x7263f2a1bd44756e34e8ced799e5549efe91126484de4bfd2bcf41d5316225e5",
+      "answers": {
+        "service": {
+          "type": "choice",
+          "choice": "SUPPORTED",
+          "confidence": 0.91,
+          "probabilities": {
+            "SUPPORTED": 0.94,
+            "CONTRADICTED": 0.01,
+            "INSUFFICIENT": 0.05
+          }
+        },
+        "purpose": {
+          "type": "choice",
+          "choice": "SUPPORTED",
+          "confidence": 1,
+          "probabilities": {
+            "SUPPORTED": 1,
+            "CONTRADICTED": 0,
+            "INSUFFICIENT": 0
+          }
+        },
+        "provenance": {
+          "type": "choice",
+          "choice": "SUPPORTED",
+          "confidence": 0.97,
+          "probabilities": {
+            "SUPPORTED": 0.98,
+            "CONTRADICTED": 0,
+            "INSUFFICIENT": 0.02
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 3299,
+        "output_tokens": 143
+      },
+      "executable": false
+    },
+    "startedAt": "1791527247",
+    "finishedAt": "1791527252"
+  },
+  "additionalTransactionRecords": {
+    "APPROVAL_DB_PATH": [
+      {
+        "status": "CONFIRMED",
+        "hash": "0x235f91917ccdd6601a7b7669a60b02703b1cead1c7455598c2102ced3538db7d"
+      }
+    ],
+    "DELIVERY_DB_PATH": [
+      {
+        "status": "CONFIRMED",
+        "hash": "0x379617da9c562f57caff3a51af9ed7c984913420946fe340fe6ee54558a7d505"
+      }
+    ],
+    "VOTE_DB_PATH": [
+      {
+        "status": "CONFIRMED",
+        "hash": "0x3e6c6c39a4447e4bbea329db50bb5fee5fb565d5de3b3cbd702c0a9587c54fc6",
+        "memberIndex": 0
+      },
+      {
+        "status": "CONFIRMED",
+        "hash": "0x3d06910c7abd9d47c016ada9707ed60777282efd22ef1b0be0b1e2caf0d6c4f8",
+        "memberIndex": 1
+      }
+    ]
+  },
+  "chainProof": {
+    "schemaVersion": 1,
+    "scope": "FINALIZED_CONFIGURED_ORIGINAL_PAID_CHAIN_FLOW_NOT_OFFICIAL_OR_PROVIDER_PROVENANCE",
+    "status": "CHAIN_FLOW_VERIFIED",
+    "chainId": "10143",
+    "arbiter": "0xBcf119A20E2A62d2aB4A29647BE04d1c2bC8b047",
+    "asset": "0xdAA288d387116A13055bBe043ACe2BDBdDa02fbe",
+    "orderId": "0xc41f5cd3145202a9bdc9535ba02270642ca8450da3fca7614774f44fa87cd175",
+    "contextHash": "0x486f840a6ee693949549afe707a3d4ccfb842f8a2ee924c5de78ccdb0bf9ce7b",
+    "deliveryEvidenceHash": "0xb581db3093890c89e76f84084750622241a17ec6721594619b693b0a8d0ca2f3",
+    "finalizedAnchor": {
+      "number": "69470454",
+      "hash": "0x7ab66498d47fefdd858006b361af8d15b8fb5ec69ed2e9e8ef06067dbd81dec1",
+      "timestamp": "1791527826"
+    },
+    "transactions": {
+      "funding": {
+        "hash": "0xfb5a0b932da20e74062c7dafe3cf47ec7045275b1588f00b6de66d9dd46b65eb",
+        "from": "0x1e79d80c13abf48d3d75c2e70937bdfaa738731b",
+        "to": "0xbcf119a20e2a62d2ab4a29647be04d1c2bc8b047",
+        "calldataHash": "0xf3a18e0fab5398d24f25daaab5d7ad414859d4ef7169dfdaaf270da506722aec",
+        "block": {
+          "number": "69468780",
+          "hash": "0xab730793151e38dcd737011dfacd34b382155ee6343ec8cf4cba0c44b48a4b0f",
+          "timestamp": "1791527315"
+        },
+        "transactionIndex": 2,
+        "status": "success",
+        "amount": "10"
+      },
+      "allocation": {
+        "hash": "0x5ce8fdd5a7389534dc54a2a980459acea08d7b23afacb742b777866a6bb9dd49",
+        "from": "0x1e79d80c13abf48d3d75c2e70937bdfaa738731b",
+        "to": "0xbcf119a20e2a62d2ab4a29647be04d1c2bc8b047",
+        "calldataHash": "0xe24a7ec7597151263adbe0e504fe8603d5b07a869eeae700eec07641d6465b1f",
+        "block": {
+          "number": "69469346",
+          "hash": "0xb5b9f3b2cffc0bc72882ebd2dd92db8b14304e11f6b03a9345b6058c96cbd045",
+          "timestamp": "1791527488"
+        },
+        "transactionIndex": 3,
+        "status": "success",
+        "amount": "10"
+      },
+      "withdrawal": {
+        "hash": "0xe24abcca24dc5e2108d5f8c032feddbcda8ed70dc59784946ba28b22dd9ddc88",
+        "from": "0x277a497adad45aad29a35704ebab207594c6979d",
+        "to": "0xbcf119a20e2a62d2ab4a29647be04d1c2bc8b047",
+        "calldataHash": "0xc6276cb0b0d2f285abdd31e8d859d47a1e0ea04dea508ae1966d42648f80e996",
+        "block": {
+          "number": "69470203",
+          "hash": "0xfb9230a8e739af5f31328d132e141c1ff3a25974e06b40b379181279ec6ed54b",
+          "timestamp": "1791527750"
+        },
+        "transactionIndex": 3,
+        "status": "success",
+        "amount": "10"
+      }
+    },
+    "balanceObservations": {
+      "funding": {
+        "scope": "WHOLE_BLOCK_ENDPOINT_BALANCES_NOT_TRANSACTION_LEVEL_DELTAS",
+        "before": {
+          "number": "69468779",
+          "hash": "0x2c4d463eff7bb3b12537496762ac5665b95a215f97fa5f4b56b59b8b094e64fa",
+          "timestamp": "1791527315"
+        },
+        "after": {
+          "number": "69468780",
+          "hash": "0xab730793151e38dcd737011dfacd34b382155ee6343ec8cf4cba0c44b48a4b0f",
+          "timestamp": "1791527315"
+        },
+        "beforeBalances": {
+          "buyer": "10",
+          "payee": "10",
+          "escrow": "0"
+        },
+        "afterBalances": {
+          "buyer": "0",
+          "payee": "10",
+          "escrow": "10"
+        },
+        "wholeBlockNetChange": {
+          "buyer": "-10",
+          "payee": "0",
+          "escrow": "10"
+        }
+      },
+      "withdrawal": {
+        "scope": "WHOLE_BLOCK_ENDPOINT_BALANCES_NOT_TRANSACTION_LEVEL_DELTAS",
+        "before": {
+          "number": "69470202",
+          "hash": "0x5d9cdca02720b90be987bcce64c2f0b093bad8c6194bd1794d4164822466271b",
+          "timestamp": "1791527749"
+        },
+        "after": {
+          "number": "69470203",
+          "hash": "0xfb9230a8e739af5f31328d132e141c1ff3a25974e06b40b379181279ec6ed54b",
+          "timestamp": "1791527750"
+        },
+        "beforeBalances": {
+          "buyer": "0",
+          "payee": "10",
+          "escrow": "10"
+        },
+        "afterBalances": {
+          "buyer": "0",
+          "payee": "20",
+          "escrow": "0"
+        },
+        "wholeBlockNetChange": {
+          "buyer": "0",
+          "payee": "10",
+          "escrow": "-10"
+        }
+      }
+    },
+    "finalOrder": {
+      "chainId": "10143",
+      "arbiter": "0xBcf119A20E2A62d2aB4A29647BE04d1c2bC8b047",
+      "asset": "0xdAA288d387116A13055bBe043ACe2BDBdDa02fbe",
+      "orderId": "0xc41f5cd3145202a9bdc9535ba02270642ca8450da3fca7614774f44fa87cd175",
+      "contextHash": "0x486f840a6ee693949549afe707a3d4ccfb842f8a2ee924c5de78ccdb0bf9ce7b",
+      "buyer": "0x950551D664134674F3f819482E0874b51c167538",
+      "seller": "0x277a497AdaD45aad29A35704EBAB207594C6979d",
+      "payee": "0x277a497AdaD45aad29A35704EBAB207594C6979d",
+      "price": "10",
+      "bond": "0",
+      "deliveryDeadline": "1791528488",
+      "settlementDeadline": "1791530288",
+      "datasetHash": "0xf8bd28cdd94d312084c32fc162b8f9cfa452629caac65ae16c373cdec2ac387f",
+      "serviceTermsHash": "0xd3287cb0d167bd76e183d2e7fb13abfbe5f5fd290442b4afe67b78f8d9e668cb",
+      "evidenceHash": "0xb581db3093890c89e76f84084750622241a17ec6721594619b693b0a8d0ca2f3",
+      "voteMask": 3,
+      "state": "ALLOCATED_PAID",
+      "credits": {
+        "buyer": "0",
+        "payee": "0"
+      },
+      "withdrawn": {
+        "buyer": "0",
+        "payee": "10"
+      },
+      "accounting": {
+        "locked": "0",
+        "outstanding": "0",
+        "balance": "0"
+      },
+      "block": {
+        "number": "69470454",
+        "hash": "0x7ab66498d47fefdd858006b361af8d15b8fb5ec69ed2e9e8ef06067dbd81dec1",
+        "timestamp": "1791527826"
+      }
+    },
+    "originalAuthorizationVerified": true,
+    "reportRecomputed": true,
+    "canExecute": false,
+    "signaturesRequested": 0,
+    "transactionsSent": 0,
+    "officialIntegrationVerified": false,
+    "privyOriginVerified": false,
+    "deploymentCreationVerified": false,
+    "financialAcceptanceStatus": "BLOCKED",
+    "limits": [
+      "Configured chain effects, original signatures and recomputed delivery only; no independent official deployment, Privy origin or real JEV attestation.",
+      "Historical balances are whole-block endpoints and net changes; precise target-transaction transfers are proved separately by its original receipt events.",
+      "No current eligibility check is substituted for the historical successful transaction. No trace-level balance delta or failed-transfer cause is claimed.",
+      "This proof alone cannot make D4-01 or any other external acceptance PASS. No signature, send, retry or new permission is available."
+    ]
+  }
+}

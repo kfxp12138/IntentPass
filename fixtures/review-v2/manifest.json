@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "questionVersion": 2,
+  "candidateQuestionConfigHash": "0x10b18fd9fb8188488389c363225d324ad63e8cc60616b8461703906d7831f01c",
+  "frozenAt": "2026-10-02T13:49:50.441Z",
+  "scope": "NEW_PUBLIC_SYNTHETIC_COHORT_BEFORE_VERSION_2_MODEL_REQUESTS",
+  "files": [
+    {
+      "path": "fixtures/review-v2/dev.json",
+      "count": 12,
+      "sha256": "1bec331286aa5b6fbb12da6e972281ab6f943a873974b9eee8d66d15f26deb6b",
+      "expectedCounts": {
+        "PASS": 4,
+        "ABSTAIN": 4,
+        "REJECT": 4
+      }
+    },
+    {
+      "path": "fixtures/review-v2/holdout.json",
+      "count": 24,
+      "sha256": "3c120e24be7b82c3e0f2f0eda99ac9302390f02ca28d59bee7473ac5ae067d05",
+      "expectedCounts": {
+        "PASS": 8,
+        "ABSTAIN": 8,
+        "REJECT": 8
+      }
+    }
+  ],
+  "developmentRegressionSource": {
+    "path": "artifacts/acceptance/application-review-smoke.json",
+    "sha256": "1f3b46bbd34f9e1a19256bfaf6a944224eebb4e20c57fa8c0b9d1f87efc8b2cc",
+    "case": "application-license-missing"
+  },
+  "holdoutRule": "Disjoint new states, seller and datasets. Freeze before all model requests; no original holdout outcomes used to tune version 2."
+}

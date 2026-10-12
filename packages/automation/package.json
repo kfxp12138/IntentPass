@@ -1,0 +1,11 @@
+{
+  "name": "@intentpass/automation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./workflow": "./src/workflow.ts",
+    "./general-profile": "./src/general-profile.ts"
+  }
+}

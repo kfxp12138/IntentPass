@@ -1,0 +1,25 @@
+{
+  "project": "IntentPass",
+  "snapshotDate": "2026-10-12",
+  "sourceCommit": "5e73369abed823d562b2555d310a0812d7b39204",
+  "scope": "Curated source snapshot for GitHub review; no repository history or private runtime state.",
+  "sourceSelection": "Committed application, packages, contracts, utilities, examples and regression tests; no uncommitted diagnostics.",
+  "packagingChanges": [
+    "Reviewer README and guides",
+    "Credential-free configuration template",
+    "Focused package commands",
+    "GitHub application CI",
+    "Curated final evidence and fixed test resources",
+    "Legacy acceptance-index test reads the original 49-row table from a test-only fixture; assertions unchanged"
+  ],
+  "excluded": [
+    "Development reports and logs",
+    "Old plans and chat/agent instructions",
+    "Git history",
+    "Secrets and sessions",
+    "Private delegations and workflow vaults",
+    "Databases and ciphertext archives",
+    "Installed dependencies and build output"
+  ],
+  "publicationPerformed": false
+}

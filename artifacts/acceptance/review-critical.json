@@ -1,0 +1,906 @@
+{
+  "split": "critical",
+  "model": "jev-1.13.0",
+  "minConfidence": 0.75,
+  "questionConfigHash": "0x7263f2a1bd44756e34e8ced799e5549efe91126484de4bfd2bcf41d5316225e5",
+  "fixtureSha256": "60d59167dd801d4ec71c77a700be6da800668c7c44a31ffed190f148fbb3d2f0",
+  "startedAt": "2026-10-02T12:50:25.180Z",
+  "ruleOnly": {
+    "definition": {
+      "version": 1,
+      "name": "STRUCTURE_AND_SUBJECT_LABEL_ONLY",
+      "rules": [
+        "invalid-state-reject",
+        "no-documents-abstain",
+        "different-subject-label-reject",
+        "otherwise-pass"
+      ],
+      "limitations": [
+        "No natural-language license or provenance inference.",
+        "No authentication, quote signatures, balances, identity rules or financial execution."
+      ]
+    },
+    "definitionSha256": "98ac63f64a16be2ac22f395d5493168c5ae6600dda79e10bdd9e212f6293962e",
+    "planned": 9,
+    "evaluated": 9,
+    "matches": 3,
+    "falsePass": 6,
+    "results": [
+      {
+        "id": "dev-001#1",
+        "caseId": "dev-001",
+        "attempt": 1,
+        "inputSha256": "332a5311dc2f674b6beba4267237682f6805fe4832393440935931fbc9355461",
+        "expected": "PASS",
+        "actual": "PASS"
+      },
+      {
+        "id": "dev-001#2",
+        "caseId": "dev-001",
+        "attempt": 2,
+        "inputSha256": "332a5311dc2f674b6beba4267237682f6805fe4832393440935931fbc9355461",
+        "expected": "PASS",
+        "actual": "PASS"
+      },
+      {
+        "id": "dev-001#3",
+        "caseId": "dev-001",
+        "attempt": 3,
+        "inputSha256": "332a5311dc2f674b6beba4267237682f6805fe4832393440935931fbc9355461",
+        "expected": "PASS",
+        "actual": "PASS"
+      },
+      {
+        "id": "dev-005#1",
+        "caseId": "dev-005",
+        "attempt": 1,
+        "inputSha256": "858b48efaf0891e3ec83d1dda3ff8c805a9dcbd92f33749fb512e0095d177029",
+        "expected": "ABSTAIN",
+        "actual": "PASS"
+      },
+      {
+        "id": "dev-005#2",
+        "caseId": "dev-005",
+        "attempt": 2,
+        "inputSha256": "858b48efaf0891e3ec83d1dda3ff8c805a9dcbd92f33749fb512e0095d177029",
+        "expected": "ABSTAIN",
+        "actual": "PASS"
+      },
+      {
+        "id": "dev-005#3",
+        "caseId": "dev-005",
+        "attempt": 3,
+        "inputSha256": "858b48efaf0891e3ec83d1dda3ff8c805a9dcbd92f33749fb512e0095d177029",
+        "expected": "ABSTAIN",
+        "actual": "PASS"
+      },
+      {
+        "id": "dev-009#1",
+        "caseId": "dev-009",
+        "attempt": 1,
+        "inputSha256": "80fcd04ceea1df44389fe88b0e3395e12950798b5e740c153d8c81b540f5c1c6",
+        "expected": "REJECT",
+        "actual": "PASS"
+      },
+      {
+        "id": "dev-009#2",
+        "caseId": "dev-009",
+        "attempt": 2,
+        "inputSha256": "80fcd04ceea1df44389fe88b0e3395e12950798b5e740c153d8c81b540f5c1c6",
+        "expected": "REJECT",
+        "actual": "PASS"
+      },
+      {
+        "id": "dev-009#3",
+        "caseId": "dev-009",
+        "attempt": 3,
+        "inputSha256": "80fcd04ceea1df44389fe88b0e3395e12950798b5e740c153d8c81b540f5c1c6",
+        "expected": "REJECT",
+        "actual": "PASS"
+      }
+    ]
+  },
+  "limitations": [
+    "Public synthetic semantic inputs only; no asset transfer, authentication, quote signature or funding claim.",
+    "Rule-only uses identical states and case IDs; structural PASS is not evidence sufficiency.",
+    "Finite inputs and repeated calls do not prove production safety."
+  ],
+  "scope": "REAL_JEV_PUBLIC_SYNTHETIC_EVALUATION",
+  "status": "PASS",
+  "confidenceRule": "FROZEN_DEVELOPMENT_RULE",
+  "endedAt": "2026-10-02T12:50:29.049Z",
+  "summary": {
+    "planned": 9,
+    "attempted": 9,
+    "evaluated": 9,
+    "errors": 0,
+    "matches": 9,
+    "falsePass": 0
+  },
+  "results": [
+    {
+      "id": "dev-001#1",
+      "caseId": "dev-001",
+      "attempt": 1,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "Commercial use of the current report is explicitly permitted."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b",
+            "text": "This statement concerns current quote 0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "332a5311dc2f674b6beba4267237682f6805fe4832393440935931fbc9355461",
+      "expected": "PASS",
+      "actual": "PASS",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.85,
+            "probabilities": {
+              "SUPPORTED": 0.9,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.09
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 1,
+            "probabilities": {
+              "SUPPORTED": 1,
+              "CONTRADICTED": 0,
+              "INSUFFICIENT": 0
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.81,
+            "probabilities": {
+              "SUPPORTED": 0.88,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.11
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1366,
+          "output_tokens": 143
+        }
+      },
+      "error": null,
+      "durationMs": 1132,
+      "matches": true
+    },
+    {
+      "id": "dev-001#2",
+      "caseId": "dev-001",
+      "attempt": 2,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "Commercial use of the current report is explicitly permitted."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b",
+            "text": "This statement concerns current quote 0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "332a5311dc2f674b6beba4267237682f6805fe4832393440935931fbc9355461",
+      "expected": "PASS",
+      "actual": "PASS",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.88,
+            "probabilities": {
+              "SUPPORTED": 0.92,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.07
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 1,
+            "probabilities": {
+              "SUPPORTED": 1,
+              "CONTRADICTED": 0,
+              "INSUFFICIENT": 0
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.81,
+            "probabilities": {
+              "SUPPORTED": 0.87,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.12
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1366,
+          "output_tokens": 143
+        }
+      },
+      "error": null,
+      "durationMs": 317,
+      "matches": true
+    },
+    {
+      "id": "dev-001#3",
+      "caseId": "dev-001",
+      "attempt": 3,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "Commercial use of the current report is explicitly permitted."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b",
+            "text": "This statement concerns current quote 0x47095502abf41a7dd422e69e4e772bd44f61188969162042195a96a9234d6d7b. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "332a5311dc2f674b6beba4267237682f6805fe4832393440935931fbc9355461",
+      "expected": "PASS",
+      "actual": "PASS",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.85,
+            "probabilities": {
+              "SUPPORTED": 0.9,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.09
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 1,
+            "probabilities": {
+              "SUPPORTED": 1,
+              "CONTRADICTED": 0,
+              "INSUFFICIENT": 0
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.76,
+            "probabilities": {
+              "SUPPORTED": 0.84,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.15
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1366,
+          "output_tokens": 143
+        }
+      },
+      "error": null,
+      "durationMs": 314,
+      "matches": true
+    },
+    {
+      "id": "dev-005#1",
+      "caseId": "dev-005",
+      "attempt": 1,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "No report license has been supplied."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6",
+            "text": "This statement concerns current quote 0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "858b48efaf0891e3ec83d1dda3ff8c805a9dcbd92f33749fb512e0095d177029",
+      "expected": "ABSTAIN",
+      "actual": "ABSTAIN",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "INSUFFICIENT",
+            "confidence": 0.39,
+            "probabilities": {
+              "SUPPORTED": 0.38,
+              "CONTRADICTED": 0.03,
+              "INSUFFICIENT": 0.59
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "INSUFFICIENT",
+            "confidence": 0.99,
+            "probabilities": {
+              "SUPPORTED": 0,
+              "CONTRADICTED": 0,
+              "INSUFFICIENT": 1
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.6,
+            "probabilities": {
+              "SUPPORTED": 0.73,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.26
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1345,
+          "output_tokens": 145
+        }
+      },
+      "error": null,
+      "durationMs": 322,
+      "matches": true
+    },
+    {
+      "id": "dev-005#2",
+      "caseId": "dev-005",
+      "attempt": 2,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "No report license has been supplied."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6",
+            "text": "This statement concerns current quote 0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "858b48efaf0891e3ec83d1dda3ff8c805a9dcbd92f33749fb512e0095d177029",
+      "expected": "ABSTAIN",
+      "actual": "ABSTAIN",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "INSUFFICIENT",
+            "confidence": 0.38,
+            "probabilities": {
+              "SUPPORTED": 0.38,
+              "CONTRADICTED": 0.03,
+              "INSUFFICIENT": 0.59
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "INSUFFICIENT",
+            "confidence": 0.99,
+            "probabilities": {
+              "SUPPORTED": 0,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.99
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.59,
+            "probabilities": {
+              "SUPPORTED": 0.73,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.26
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1345,
+          "output_tokens": 145
+        }
+      },
+      "error": null,
+      "durationMs": 348,
+      "matches": true
+    },
+    {
+      "id": "dev-005#3",
+      "caseId": "dev-005",
+      "attempt": 3,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "No report license has been supplied."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6",
+            "text": "This statement concerns current quote 0xd88fcb71bb9c22f0b944bc72a175bf9de5592837049001e2468d83cd2e96faa6. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "858b48efaf0891e3ec83d1dda3ff8c805a9dcbd92f33749fb512e0095d177029",
+      "expected": "ABSTAIN",
+      "actual": "ABSTAIN",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "INSUFFICIENT",
+            "confidence": 0.48,
+            "probabilities": {
+              "SUPPORTED": 0.31,
+              "CONTRADICTED": 0.04,
+              "INSUFFICIENT": 0.65
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "INSUFFICIENT",
+            "confidence": 0.99,
+            "probabilities": {
+              "SUPPORTED": 0,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.99
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.52,
+            "probabilities": {
+              "SUPPORTED": 0.68,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.31
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1345,
+          "output_tokens": 145
+        }
+      },
+      "error": null,
+      "durationMs": 341,
+      "matches": true
+    },
+    {
+      "id": "dev-009#1",
+      "caseId": "dev-009",
+      "attempt": 1,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "Commercial use of the current report is prohibited."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8",
+            "text": "This statement concerns current quote 0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "80fcd04ceea1df44389fe88b0e3395e12950798b5e740c153d8c81b540f5c1c6",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.38,
+            "probabilities": {
+              "SUPPORTED": 0.58,
+              "CONTRADICTED": 0.3,
+              "INSUFFICIENT": 0.12
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "CONTRADICTED",
+            "confidence": 1,
+            "probabilities": {
+              "SUPPORTED": 0,
+              "CONTRADICTED": 1,
+              "INSUFFICIENT": 0
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.77,
+            "probabilities": {
+              "SUPPORTED": 0.85,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.14
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1353,
+          "output_tokens": 145
+        }
+      },
+      "error": null,
+      "durationMs": 345,
+      "matches": true
+    },
+    {
+      "id": "dev-009#2",
+      "caseId": "dev-009",
+      "attempt": 2,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "Commercial use of the current report is prohibited."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8",
+            "text": "This statement concerns current quote 0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "80fcd04ceea1df44389fe88b0e3395e12950798b5e740c153d8c81b540f5c1c6",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.28,
+            "probabilities": {
+              "SUPPORTED": 0.53,
+              "CONTRADICTED": 0.36,
+              "INSUFFICIENT": 0.11
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "CONTRADICTED",
+            "confidence": 1,
+            "probabilities": {
+              "SUPPORTED": 0,
+              "CONTRADICTED": 1,
+              "INSUFFICIENT": 0
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.86,
+            "probabilities": {
+              "SUPPORTED": 0.9,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.09
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1353,
+          "output_tokens": 145
+        }
+      },
+      "error": null,
+      "durationMs": 351,
+      "matches": true
+    },
+    {
+      "id": "dev-009#3",
+      "caseId": "dev-009",
+      "attempt": 3,
+      "input": {
+        "policy": {
+          "schemaVersion": 1,
+          "taskId": "0x64e0f8f80a2864f87fc61db19d23af2c57e274861427536d8be68465e6b9e3a7",
+          "datasetHash": "0x6564c10243230126bda36c49948a51019de9b780bc3b82f4ab7da560f9606a3e",
+          "action": "dataset-report",
+          "metrics": [
+            "count",
+            "sum",
+            "min",
+            "max"
+          ],
+          "purpose": "commercial",
+          "budget": "15",
+          "allowedAsset": "0x0000000000000000000000000000000000000001",
+          "requiredFacts": [
+            "service-matches-task",
+            "commercial-use-permitted",
+            "evidence-belongs-to-service"
+          ],
+          "version": "1"
+        },
+        "taskText": "Compute count, sum, minimum and maximum for exactly [3,5,-2,9], with permission for commercial use of this report.",
+        "currentQuote": {
+          "quoteId": "0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8",
+          "seller": "0x0000000000000000000000000000000000000002",
+          "service": "dataset-report",
+          "serviceTerms": "Commercial use of the current report is prohibited."
+        },
+        "documents": [
+          {
+            "id": "service-statement",
+            "subjectQuoteId": "0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8",
+            "text": "This statement concerns current quote 0xca82d9c5357ec0ef6244c32318f94fc4705e0e8633183167842ce4503979cbf8. The current report computes count, sum, minimum and maximum over exactly dataset [3,5,-2,9]."
+          }
+        ]
+      },
+      "inputSha256": "80fcd04ceea1df44389fe88b0e3395e12950798b5e740c153d8c81b540f5c1c6",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "service": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.25,
+            "probabilities": {
+              "SUPPORTED": 0.5,
+              "CONTRADICTED": 0.37,
+              "INSUFFICIENT": 0.13
+            }
+          },
+          "purpose": {
+            "type": "choice",
+            "choice": "CONTRADICTED",
+            "confidence": 1,
+            "probabilities": {
+              "SUPPORTED": 0,
+              "CONTRADICTED": 1,
+              "INSUFFICIENT": 0
+            }
+          },
+          "provenance": {
+            "type": "choice",
+            "choice": "SUPPORTED",
+            "confidence": 0.82,
+            "probabilities": {
+              "SUPPORTED": 0.87,
+              "CONTRADICTED": 0.01,
+              "INSUFFICIENT": 0.12
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 1353,
+          "output_tokens": 145
+        }
+      },
+      "error": null,
+      "durationMs": 373,
+      "matches": true
+    }
+  ],
+  "blocked": null
+}

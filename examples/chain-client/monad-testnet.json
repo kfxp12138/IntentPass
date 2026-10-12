@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "scope": "PROJECT_CONFIGURED_TESTNET_DEPLOYMENT_NOT_INDEPENDENT_CREATION_PROOF",
+  "deployment": {
+    "chainId": "10143",
+    "arbiter": "0xBcf119A20E2A62d2aB4A29647BE04d1c2bC8b047",
+    "asset": "0xdAA288d387116A13055bBe043ACe2BDBdDa02fbe",
+    "gate": "0x39cF7a4E737e1700a736e90F42F1f9878F231A36",
+    "reviewer": "0xFCF7bce2B0D1917b580e5DA4ed3fD7cf35690485",
+    "committeeHash": "0x57d1212f89743aedb1b40de4f597344f7ffb150355f7615e533e37d10750600a"
+  }
+}

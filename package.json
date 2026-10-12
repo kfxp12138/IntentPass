@@ -1,0 +1,41 @@
+{
+  "name": "intentpass",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "dev": "node --import tsx apps/web/src/server.ts",
+    "start": "node --import tsx apps/web/src/server.ts --production",
+    "build": "tsc --noEmit && vite build apps/web --outDir dist",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "node --experimental-sqlite --import tsx --test --test-reporter=tap tests/*.test.ts",
+    "test:contract": "forge test --root contracts",
+    "test:integration": "node --experimental-sqlite --import tsx --test --test-reporter=tap tests/http.test.ts",
+    "example:run": "node --import tsx examples/client/index.ts",
+    "example:chain": "node --import tsx examples/chain-client/index.ts",
+    "abi:check": "node --import tsx scripts/check-abi.ts",
+    "tools:foundry": "node --import tsx scripts/install-foundry.ts",
+    "test:contract:monad": "node --import tsx scripts/test-monad-contract.ts",
+    "test": "pnpm test:unit",
+    "check": "pnpm typecheck && pnpm test:unit && pnpm build"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "5.4.0",
+    "@privy-io/js-sdk-core": "0.77.0",
+    "@privy-io/node": "0.35.0",
+    "viem": "2.56.0",
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.8",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vite": "7.1.9",
+    "@category-labs/mera": "0.2.0"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "description": "Evidence-reviewed agent procurement with verifiable delivery and conditional settlement on Monad."
+}

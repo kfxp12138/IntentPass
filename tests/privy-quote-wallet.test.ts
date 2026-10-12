@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {privateKeyToAccount,generatePrivateKey} from 'viem/accounts';
+import {termsHash,verifyQuoteSignature} from '../packages/protocol/src/typed-data.js';
+import {signPrivyDemoQuote} from '../apps/web/src/privy-quote-wallet.js';
+import type {WalletSdk} from '../apps/web/src/privy-grant-wallet.js';
+import type {RecoveryDeployment} from '../packages/capsule/src/recovery.js';
+const a=(n:number)=>`0x${n.toString(16).padStart(40,'0')}` as `0x${string}`;
+function fixture(){
+  const account=privateKeyToAccount(generatePrivateKey()),terms='Test commercial report rights',quote={schemaVersion:1 as const,quoteId:'0x'+'11'.repeat(32),service:'dataset-report' as const,seller:account.address,payee:account.address,asset:a(1),amount:'10',serviceTerms:terms,serviceTermsHash:termsHash(terms),expiresAt:String(Math.floor(Date.now()/1000)+3600)},deployment:RecoveryDeployment={chainId:'10143',arbiter:a(2),asset:a(1),reviewer:a(3),executor:a(4),committee:[a(5),a(6),a(7)]};
+  let signs=0,reservations=0,disposed=0,chain='0x279f',owner=account.address,subject='seller-subject',ready=true;let signWork=async(p:unknown[])=>account.signTypedData(JSON.parse(String(p[1])));
+  const provider={request:async({method,params}:{method:string;params?:unknown[]})=>{if(method==='eth_chainId')return chain;if(method==='eth_accounts')return [owner];if(method==='eth_signTypedData_v4'){signs++;return signWork(params!);}throw Error('FORBIDDEN_RPC');}};
+  const sdk={user:{get:async()=>({user:{id:subject,linked_accounts:[{type:'wallet',chain_type:'ethereum',wallet_client_type:'privy',connector_type:'embedded',address:account.address,wallet_index:0}]}})},embeddedWallet:{ping:async()=>ready,getProvider:async()=>provider,create:async()=>{throw Error('FORBIDDEN_CREATION');}},setMessagePoster:()=>{}} as unknown as WalletSdk;
+  const bridge=()=>({dispose:()=>{disposed++;}}),reserve=async()=>{reservations++;return true;};const sign=(q:unknown=quote,confirmation=true,r=reserve,active=()=>{},timeout=60000)=>signPrivyDemoQuote(q,'seller-subject',confirmation,deployment,sdk,'test-app',r,active,bridge,timeout);
+  return {account,quote,deployment,sdk,sign,counts:()=>({signs,reservations,disposed}),chain:(v:string)=>{chain=v;},owner:(v:`0x${string}`)=>{owner=v;},subject:(v:string)=>{subject=v;},ready:(v:boolean)=>{ready=v;},signWork:(v:typeof signWork)=>{signWork=v;}};
+}
+test('one explicit reserved quote uses only canonical EIP712 signing and produces a valid original signature',async()=>{const f=fixture(),signature=await f.sign();assert.equal(await verifyQuoteSignature({...f.quote,signature},{chainId:f.deployment.chainId,arbiter:f.deployment.arbiter}),true);assert.deepEqual(f.counts(),{signs:1,reservations:1,disposed:1});});
+test('missing consent changed asset payee terms amount expiry or seller identity stop before any reservation or signature',async()=>{
+  const f=fixture();await assert.rejects(f.sign(f.quote,false),/CONFIRMATION_REQUIRED/);
+  for(const change of [{asset:a(99)},{payee:a(99)},{amount:'11'},{serviceTerms:'Changed'},{expiresAt:'1'},{expiresAt:String(Math.floor(Date.now()/1000)+1000000)}])await assert.rejects(f.sign({...f.quote,...change}),/SCOPE_INVALID/);
+  f.subject('other');await assert.rejects(f.sign(),/SESSION_CHANGED/);assert.equal(f.counts().signs,0);assert.equal(f.counts().reservations,0);
+});
+test('wrong wallet chain or account stops before reserving and never switches chain',async()=>{for(const kind of ['chain','account']){const f=fixture();kind==='chain'?f.chain('0x1'):f.owner(a(99));await assert.rejects(f.sign(),/WALLET_MISMATCH/);assert.equal(f.counts().reservations,0);assert.equal(f.counts().signs,0);assert.equal(f.counts().disposed,1);}});
+test('an existing original reservation cannot invoke a second quote signature',async()=>{const f=fixture();await assert.rejects(f.sign(f.quote,true,async()=>false),/ORIGINAL_SIGNATURE_REQUIRED/);assert.equal(f.counts().signs,0);assert.equal(f.counts().disposed,1);});
+test('session change after reservation and wrong signatures remain unknown without repeating',async()=>{const f=fixture();let changed=false;await assert.rejects(f.sign(f.quote,true,async()=>{changed=true;return true;},()=>{if(changed)throw Error('SESSION_CHANGED');}),/SIGNATURE_OUTCOME_UNKNOWN/);assert.equal(f.counts().signs,0);const bad=fixture();bad.signWork(async()=>('0x'+'00'.repeat(65)) as `0x${string}`);await assert.rejects(bad.sign(),/SIGNATURE_OUTCOME_UNKNOWN/);assert.equal(bad.counts().signs,1);});
+test('shared wallet lock prevents concurrent signatures and stays held until the original provider response',async()=>{const f=fixture();let finish!:(s:`0x${string}`)=>void,started!:()=>void;const reached=new Promise<void>(r=>{started=r;}),pending=new Promise<`0x${string}`>(r=>{finish=r;});f.signWork(async()=>{started();return pending;});const first=f.sign();await reached;await assert.rejects(f.sign(),/WALLET_SIGNATURE_PENDING/);finish(('0x'+'00'.repeat(65)) as `0x${string}`);await assert.rejects(first,/SIGNATURE_OUTCOME_UNKNOWN/);assert.equal(f.counts().signs,1);assert.equal(f.counts().reservations,1);});
+test('UI timeout never releases an in-flight SDK signature lock or permits another signing attempt',async()=>{const f=fixture();let finish!:(s:`0x${string}`)=>void;const pending=new Promise<`0x${string}`>(r=>{finish=r;});f.signWork(async()=>pending);await assert.rejects(f.sign(f.quote,true,async()=>true,()=>{},25),/SIGNATURE_OUTCOME_UNKNOWN/);await assert.rejects(f.sign(),/WALLET_SIGNATURE_PENDING/);assert.equal(f.counts().signs,1);finish(('0x'+'00'.repeat(65)) as `0x${string}`);await new Promise(r=>setTimeout(r,10));await assert.rejects(f.sign(f.quote,true,async()=>false),/ORIGINAL_SIGNATURE_REQUIRED/);assert.equal(f.counts().signs,1);});
+test('cold quote wallet frame may hydrate after five seconds; only readiness is retried and signing still happens once',async t=>{
+  const f=fixture();let elapsed=0,pings=0;t.mock.method(performance,'now',()=>elapsed);t.mock.method(f.sdk.embeddedWallet,'ping',async()=>{pings++;elapsed+=2000;return pings===4;});
+  await f.sign();assert.equal(pings,4);assert.equal(f.counts().signs,1);assert.equal(f.counts().reservations,1);
+});

@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "model": "jev-1.13.0",
+  "minConfidence": 0.75,
+  "questionConfigHash": "0x7263f2a1bd44756e34e8ced799e5549efe91126484de4bfd2bcf41d5316225e5",
+  "developmentReportPath": "artifacts/acceptance/review-dev-calibrated.json",
+  "developmentReportSha256": "c3b9f916189318fbde9c0d523426e01be782b5675d00a017df7e2d7a130d7209"
+}

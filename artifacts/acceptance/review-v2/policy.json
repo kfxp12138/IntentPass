@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "questionVersion": 2,
+  "model": "jev-1.13.0",
+  "minConfidence": 0.7,
+  "questionConfigHash": "0x9b986521039728462e04b99e7273d851961d5fabc72a76727d90aad793b482bb",
+  "developmentReportPath": "artifacts/acceptance/review-v2/dev-calibrated.json",
+  "developmentReportSha256": "59a8073d84f96c25959307b9eecca7c19e13e37a9cb5e73969844037fe44fb11"
+}

@@ -1,0 +1,76 @@
+{
+  "kind": "LOCAL_ENCODING_FIXTURE_NOT_REAL_AUTHORIZATION",
+  "deployment": {
+    "chainId": "31337",
+    "arbiter": "0x0000000000000000000000000000000000000001"
+  },
+  "policy": {
+    "schemaVersion": 1,
+    "taskId": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "datasetHash": "0x0000000000000000000000000000000000000000000000000000000000000002",
+    "action": "dataset-report",
+    "metrics": [
+      "count",
+      "sum",
+      "min",
+      "max"
+    ],
+    "purpose": "commercial",
+    "budget": "10",
+    "allowedAsset": "0x0000000000000000000000000000000000000002",
+    "requiredFacts": [
+      "service-matches-task",
+      "commercial-use-permitted",
+      "evidence-belongs-to-service"
+    ],
+    "version": "1"
+  },
+  "quote": {
+    "schemaVersion": 1,
+    "quoteId": "0x0000000000000000000000000000000000000000000000000000000000000003",
+    "service": "dataset-report",
+    "seller": "0x0000000000000000000000000000000000000004",
+    "payee": "0x0000000000000000000000000000000000000004",
+    "asset": "0x0000000000000000000000000000000000000002",
+    "amount": "10",
+    "serviceTerms": "Commercial use of this report is permitted.",
+    "serviceTermsHash": "0xe207c1bd9559fc5430a616bba5eaa8ea6d515767fd7840a207ecc19d3d12fd3a",
+    "expiresAt": "2000000000"
+  },
+  "receipt": {
+    "schemaVersion": 1,
+    "contextHash": "0x0000000000000000000000000000000000000000000000000000000000000005",
+    "purchaseEvidenceCommitment": "0x0000000000000000000000000000000000000000000000000000000000000006",
+    "policyHash": "0x2d1c97f017de7878deb299cccf35a35791a93a8f8e969c54e3d0bbe35230dcf9",
+    "reviewer": "0x0000000000000000000000000000000000000007",
+    "modelId": "local-crypto-fixture-only",
+    "questionConfigHash": "0x0000000000000000000000000000000000000000000000000000000000000008",
+    "decision": "PASS",
+    "expiresAt": "2000000000"
+  },
+  "grant": {
+    "schemaVersion": 1,
+    "owner": "0x0000000000000000000000000000000000000009",
+    "executor": "0x000000000000000000000000000000000000000a",
+    "chainId": "31337",
+    "arbiter": "0x0000000000000000000000000000000000000001",
+    "orderId": "0x000000000000000000000000000000000000000000000000000000000000000b",
+    "asset": "0x0000000000000000000000000000000000000002",
+    "amount": "10",
+    "contextHash": "0x0000000000000000000000000000000000000000000000000000000000000005",
+    "preparationHash": "0x000000000000000000000000000000000000000000000000000000000000000c",
+    "receiptHash": "0xba2d8dbb615905340d92f79ae21327735244869dc520e8539a424342cf03f5c0",
+    "nonce": "0",
+    "deadline": "2000000000",
+    "maxUses": 1
+  },
+  "hashes": {
+    "policy": "0x2d1c97f017de7878deb299cccf35a35791a93a8f8e969c54e3d0bbe35230dcf9",
+    "quoteStruct": "0x2f47aca6e8945938611ca0c4ab7f2df5e98f986d53e5542536133a5aa27b7451",
+    "quoteSigning": "0xdac952e9a35744c5fbcdb480dfb9d0746cd7051868953b840ba78f9907de43e9",
+    "receiptStruct": "0x7281cf8e70bd02e2412c651c94c145dabe7acf95b3a61f8dcead8b18766be0d0",
+    "receiptSigning": "0xba2d8dbb615905340d92f79ae21327735244869dc520e8539a424342cf03f5c0",
+    "grantStruct": "0x31f3647dfd1a03a6fc1991651d5e41d3467c9d9d4b795e760f691b7dad8a9add",
+    "grantSigning": "0xc733dd43e85fb4a0535d444f92d3600e6965f09f878b0f437eaf2c3c22ec5015"
+  }
+}

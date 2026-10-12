@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "scope": "FIXED_OFFICIAL_SOURCE_REFERENCES_NOT_DISTRIBUTION_OR_LEGAL_APPROVAL",
+  "recordedAt": "2026-10-02T18:29:00.004Z",
+  "sources": [
+    {
+      "id": "esbuild-0.25.12",
+      "scope": "UPSTREAM_REFERENCE_NOT_INSTALLED_DISTRIBUTION",
+      "commit": "208f539945b145e7c9d6d844290f81c3fe5af320",
+      "repository": "https://github.com/evanw/esbuild",
+      "packages": [
+        {
+          "name": "esbuild",
+          "version": "0.25.12"
+        },
+        {
+          "name": "@esbuild/darwin-arm64",
+          "version": "0.25.12"
+        }
+      ],
+      "licenseLabel": "MIT",
+      "license": {
+        "path": "third-party/notice-sources/esbuild-0.25.12/LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/evanw/esbuild/208f539945b145e7c9d6d844290f81c3fe5af320/LICENSE.md",
+        "bytes": 1069,
+        "sha256": "b40ec5baec7bb34fa5b1c09521fa3cd52d5fad7adafed74932a2010d3612a681"
+      },
+      "versionEvidence": [
+        {
+          "path": "third-party/notice-sources/esbuild-0.25.12/registry-0.json",
+          "url": "https://registry.npmjs.org/esbuild/0.25.12",
+          "bytes": 2292,
+          "sha256": "2d519a80bfd174247d8c092d170227cb3a48674f066809580332d27abf0c2a5e",
+          "kind": "REGISTRY_METADATA",
+          "package": {
+            "name": "esbuild",
+            "version": "0.25.12"
+          }
+        },
+        {
+          "path": "third-party/notice-sources/esbuild-0.25.12/registry-1.json",
+          "url": "https://registry.npmjs.org/%40esbuild%2Fdarwin-arm64/0.25.12",
+          "bytes": 1393,
+          "sha256": "d2892c9fb6513d8c36969f0b800acd47b993cc2d3dc30358837bbef3fb9e8dab",
+          "kind": "REGISTRY_METADATA",
+          "package": {
+            "name": "@esbuild/darwin-arm64",
+            "version": "0.25.12"
+          }
+        },
+        {
+          "path": "third-party/notice-sources/esbuild-0.25.12/upstream-version.txt",
+          "url": "https://raw.githubusercontent.com/evanw/esbuild/208f539945b145e7c9d6d844290f81c3fe5af320/version.txt",
+          "bytes": 8,
+          "sha256": "ac134cf53a2f5d5520a44906b3bd542bffa2ca5862bae971f999b7c86ed4ce26",
+          "kind": "UPSTREAM_VERSION_TEXT",
+          "package": {
+            "name": "esbuild",
+            "version": "0.25.12"
+          }
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "rollup-4.63.5",
+      "scope": "UPSTREAM_REFERENCE_NOT_INSTALLED_DISTRIBUTION",
+      "commit": "3722484c33c58b3ab0cbbfcca09b8f267d420329",
+      "repository": "https://github.com/rollup/rollup",
+      "packages": [
+        {
+          "name": "rollup",
+          "version": "4.63.5"
+        },
+        {
+          "name": "@rollup/rollup-darwin-arm64",
+          "version": "4.63.5"
+        }
+      ],
+      "licenseLabel": "MIT_WITH_BUNDLED_MIT_ISC_0BSD_TEXT_NOT_NATIVE_RIGHTS_AUDIT",
+      "license": {
+        "path": "third-party/notice-sources/rollup-4.63.5/LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/rollup/rollup/3722484c33c58b3ab0cbbfcca09b8f267d420329/LICENSE.md",
+        "bytes": 35231,
+        "sha256": "fa1bd040c5bdeefe65b3821cebf474f2733ce65df13089bd151dda1778e62fe8"
+      },
+      "versionEvidence": [
+        {
+          "path": "third-party/notice-sources/rollup-4.63.5/registry-0.json",
+          "url": "https://registry.npmjs.org/rollup/4.63.5",
+          "bytes": 12621,
+          "sha256": "6e9b89c400e5ec7fc23d7971e9e2f3a9fc9de9b37839c1339885f1aaa65af1c7",
+          "kind": "REGISTRY_METADATA",
+          "package": {
+            "name": "rollup",
+            "version": "4.63.5"
+          }
+        },
+        {
+          "path": "third-party/notice-sources/rollup-4.63.5/registry-1.json",
+          "url": "https://registry.npmjs.org/%40rollup%2Frollup-darwin-arm64/4.63.5",
+          "bytes": 1979,
+          "sha256": "58ab07966f3d21faf150d47199d8cf893025d8c0e74ced65492be286b76d5479",
+          "kind": "REGISTRY_METADATA",
+          "package": {
+            "name": "@rollup/rollup-darwin-arm64",
+            "version": "4.63.5"
+          }
+        },
+        {
+          "path": "third-party/notice-sources/rollup-4.63.5/upstream-version.json",
+          "url": "https://raw.githubusercontent.com/rollup/rollup/3722484c33c58b3ab0cbbfcca09b8f267d420329/package.json",
+          "bytes": 11688,
+          "sha256": "403dd64c632c2eb8a8810736d0fddb6918a51d7abdcdf95c349cbeaf48aee725",
+          "kind": "UPSTREAM_PACKAGE_JSON",
+          "package": {
+            "name": "rollup",
+            "version": "4.63.5"
+          }
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "svix-1.99.1",
+      "scope": "UPSTREAM_REFERENCE_NOT_INSTALLED_DISTRIBUTION",
+      "commit": "6cd12c1d6d19c6d222bab889d08315f6469702c8",
+      "repository": "https://github.com/svix/svix-webhooks",
+      "packages": [
+        {
+          "name": "svix",
+          "version": "1.99.1"
+        }
+      ],
+      "licenseLabel": "MIT",
+      "license": {
+        "path": "third-party/notice-sources/svix-1.99.1/LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/svix/svix-webhooks/6cd12c1d6d19c6d222bab889d08315f6469702c8/LICENSE",
+        "bytes": 1088,
+        "sha256": "5962c28427cb0c49b4782932eeeb9dfd3fcd14002755a68155bd6bb306717ced"
+      },
+      "versionEvidence": [
+        {
+          "path": "third-party/notice-sources/svix-1.99.1/registry-0.json",
+          "url": "https://registry.npmjs.org/svix/1.99.1",
+          "bytes": 2075,
+          "sha256": "cc010d59edf36225f30f7bccac021b31fe9212000f3fc4cd3d89c8e382423073",
+          "kind": "REGISTRY_METADATA",
+          "package": {
+            "name": "svix",
+            "version": "1.99.1"
+          }
+        },
+        {
+          "path": "third-party/notice-sources/svix-1.99.1/upstream-version.json",
+          "url": "https://raw.githubusercontent.com/svix/svix-webhooks/6cd12c1d6d19c6d222bab889d08315f6469702c8/javascript/package.json",
+          "bytes": 934,
+          "sha256": "eab4ce90921a3e225b3700d97c38ceb642427453bbe70e16d3e5d8343e21e3b4",
+          "kind": "UPSTREAM_PACKAGE_JSON",
+          "package": {
+            "name": "svix",
+            "version": "1.99.1"
+          }
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "standardwebhooks-1.0.0",
+      "scope": "UPSTREAM_REFERENCE_NOT_INSTALLED_DISTRIBUTION",
+      "commit": "929bf0c1928b188287eaf88d0a9f0a4e87df6499",
+      "repository": "https://github.com/standard-webhooks/standard-webhooks",
+      "packages": [
+        {
+          "name": "standardwebhooks",
+          "version": "1.0.0"
+        }
+      ],
+      "licenseLabel": "APACHE_2_0_ROOT_REFERENCE_CONFLICTS_WITH_PACKAGE_MIT_DECLARATION",
+      "license": {
+        "path": "third-party/notice-sources/standardwebhooks-1.0.0/LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/standard-webhooks/standard-webhooks/929bf0c1928b188287eaf88d0a9f0a4e87df6499/LICENSE",
+        "bytes": 11357,
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+      },
+      "versionEvidence": [
+        {
+          "path": "third-party/notice-sources/standardwebhooks-1.0.0/registry-0.json",
+          "url": "https://registry.npmjs.org/standardwebhooks/1.0.0",
+          "bytes": 2179,
+          "sha256": "3d935bef7da4b6bf132fc44878221808aa704b5f90129d3b656924968e13e335",
+          "kind": "REGISTRY_METADATA",
+          "package": {
+            "name": "standardwebhooks",
+            "version": "1.0.0"
+          }
+        },
+        {
+          "path": "third-party/notice-sources/standardwebhooks-1.0.0/upstream-version.json",
+          "url": "https://raw.githubusercontent.com/standard-webhooks/standard-webhooks/929bf0c1928b188287eaf88d0a9f0a4e87df6499/libraries/javascript/package.json",
+          "bytes": 1411,
+          "sha256": "7aa6da1a0344c826cc2ad28aed06866e9c1b8938ea55cb5650fe66c97c213515",
+          "kind": "UPSTREAM_PACKAGE_JSON",
+          "package": {
+            "name": "standardwebhooks",
+            "version": "1.0.0"
+          }
+        }
+      ],
+      "unresolved": [
+        "PACKAGE_DECLARATION_AND_UPSTREAM_ROOT_LICENSE_DIFFER",
+        "PUBLISH_COMMIT_PACKAGE_VERSION_DIFFERS"
+      ]
+    },
+    {
+      "id": "openzeppelin-5.4.0",
+      "scope": "UPSTREAM_REFERENCE_NOT_INSTALLED_DISTRIBUTION",
+      "commit": "c64a1edb67b6e3f4a15cca8909c9482ad33a02b0",
+      "repository": "https://github.com/OpenZeppelin/openzeppelin-contracts",
+      "packages": [
+        {
+          "name": "@openzeppelin/contracts",
+          "version": "5.4.0"
+        }
+      ],
+      "licenseLabel": "MIT",
+      "license": {
+        "path": "third-party/notice-sources/openzeppelin-5.4.0/LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/c64a1edb67b6e3f4a15cca8909c9482ad33a02b0/LICENSE",
+        "bytes": 1090,
+        "sha256": "13cd784a6c31361f0e0c6aa3b410a1cb9a079868b7314c13e3eb8a75351746b9"
+      },
+      "versionEvidence": [
+        {
+          "path": "third-party/notice-sources/openzeppelin-5.4.0/tag-reference.json",
+          "url": "https://api.github.com/repos/OpenZeppelin/openzeppelin-contracts/git/ref/tags/v5.4.0",
+          "bytes": 379,
+          "sha256": "30b0bd22d3dfcac1e5a58ad26416fedcb3cee1175de6c85798affffdd1b99593",
+          "kind": "GIT_TAG_REFERENCE",
+          "package": {
+            "name": "@openzeppelin/contracts",
+            "version": "5.4.0"
+          }
+        },
+        {
+          "path": "third-party/notice-sources/openzeppelin-5.4.0/registry-0.json",
+          "url": "https://registry.npmjs.org/%40openzeppelin%2Fcontracts/5.4.0",
+          "bytes": 2284,
+          "sha256": "957340b9a9d2a39a83b4df5604e855913659bd72530699e10825126ba205df64",
+          "kind": "REGISTRY_METADATA",
+          "package": {
+            "name": "@openzeppelin/contracts",
+            "version": "5.4.0"
+          }
+        },
+        {
+          "path": "third-party/notice-sources/openzeppelin-5.4.0/upstream-version.json",
+          "url": "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/c64a1edb67b6e3f4a15cca8909c9482ad33a02b0/package.json",
+          "bytes": 3839,
+          "sha256": "9623b9e2f7fec73a3b6b30fd1d843b17338be5107750e735a3dec375337af7ef",
+          "kind": "UPSTREAM_PACKAGE_JSON",
+          "package": {
+            "name": "@openzeppelin/contracts",
+            "version": "5.4.0"
+          }
+        }
+      ],
+      "unresolved": []
+    }
+  ],
+  "limits": [
+    "Registry version metadata and full upstream commit URLs bind reference bytes, not legal compatibility or permission.",
+    "Supplemental upstream files are not inserted into npm packages and do not erase original distribution gaps.",
+    "standardwebhooks 1.0.0 registry declares MIT while its published gitHead has an Apache-2.0 root license and JavaScript package version 1.3.0; unresolved.",
+    "Rollup root notice includes bundled JavaScript texts; no claim that all native or nested/vendor code rights were audited."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "scope": "PUBLIC_SYNTHETIC_SEMANTIC_CASES_NO_REAL_ASSET_OR_MODEL_RESULTS",
+  "frozenAt": "2026-10-01T15:45:34.700Z",
+  "files": [
+    {
+      "path": "fixtures/dev/review-cases.json",
+      "count": 12,
+      "sha256": "60d59167dd801d4ec71c77a700be6da800668c7c44a31ffed190f148fbb3d2f0",
+      "expectedCounts": {
+        "PASS": 4,
+        "ABSTAIN": 4,
+        "REJECT": 4
+      }
+    },
+    {
+      "path": "fixtures/holdout/review-cases.json",
+      "count": 24,
+      "sha256": "9d76aeacebe5792588f81fabb32c670e0952f35acd7701378cd2a61f8ca444bc",
+      "expectedCounts": {
+        "PASS": 8,
+        "ABSTAIN": 8,
+        "REJECT": 8
+      }
+    }
+  ],
+  "change": "Expanded two development contradictions to unrelated-source and similar-dataset cases before any real model calls. Holdout bytes and hash are unchanged."
+}
